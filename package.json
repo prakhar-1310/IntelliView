@@ -1,0 +1,19 @@
+{
+  "name": "intelliview",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm i --prefix backend && npm i --prefix frontend && npm run build --prefix frontend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prakhar-1310/IntelliView.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prakhar-1310/IntelliView/issues"
+  },
+  "homepage": "https://github.com/prakhar-1310/IntelliView#readme",
+  "description": ""
+}
