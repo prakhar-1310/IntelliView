@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({quiet : true}); // this will stops the warning or env count from the dontenv when we running the server
 
 export const ENV = {
     PORT : process.env.PORT,
