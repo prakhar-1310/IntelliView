@@ -18,6 +18,7 @@
     "inngest": "^3.44.3",
     "intelliview": "file:..",
     "mongoose": "^9.0.2",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "stream-chat": "^9.27.2"
   }
 }
