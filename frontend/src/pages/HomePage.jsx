@@ -9,6 +9,7 @@ import {
   ZapIcon,
 } from "lucide-react";
 import { SignInButton } from "@clerk/clerk-react";
+import Footer from "./Footer";
 
 function HomePage() {
   return (
@@ -55,10 +56,10 @@ function HomePage() {
 
             <h1 className="text-5xl lg:text-7xl font-black leading-tight">
               <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                Code Together,
+                Code live.
               </span>
               <br />
-              <span className="text-base-content">Learn Together</span>
+              <span className="text-base-content">Think aloud.</span>
             </h1>
 
             <p className="text-xl text-base-content/70 leading-relaxed max-w-xl">
@@ -176,6 +177,8 @@ function HomePage() {
           </div>
         </div>
       </div>
+
+      <Footer/>
     </div>
   );
 }
