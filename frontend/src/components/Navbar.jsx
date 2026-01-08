@@ -1,9 +1,11 @@
 import { Link, useLocation } from "react-router";
 import { BookOpenIcon, LayoutDashboardIcon, SparklesIcon } from "lucide-react";
-import { UserButton } from "@clerk/clerk-react";
+import { UserButton, useUser } from "@clerk/clerk-react";
+import { isAdmin } from "../lib/admin";
 
 function Navbar() {
   const location = useLocation();
+  const { user } = useUser();
 
   console.log(location);
 
@@ -66,7 +68,10 @@ function Navbar() {
             </div>
           </Link>
 
-          <div className="ml-4 mt-2">
+          <div className="ml-4 mt-2 flex items-center gap-2">
+            {isAdmin(user) && (
+              <span className="badge badge-warning badge-sm">Admin</span>
+            )}
             <UserButton />
           </div>
         </div>

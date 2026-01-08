@@ -1,5 +1,8 @@
 import { Code2Icon, LoaderIcon, PlusIcon } from "lucide-react";
 import { PROBLEMS } from "../data/problems";
+import { useQuery } from "@tanstack/react-query";
+import { problemApi } from "../api/problems";
+import { useEffect, useState } from "react";
 
 function CreateSessionModal({
   isOpen,
@@ -9,7 +12,22 @@ function CreateSessionModal({
   onCreateRoom,
   isCreating,
 }) {
-  const problems = Object.values(PROBLEMS);
+  const [allProblems, setAllProblems] = useState([]);
+  
+  // Fetch problems from database
+  const { data: dbProblems } = useQuery({
+    queryKey: ["problems"],
+    queryFn: problemApi.getProblems,
+  });
+  
+  // Combine static and database problems
+  useEffect(() => {
+    const staticProblems = Object.values(PROBLEMS);
+    const dynamicProblems = dbProblems?.problems || [];
+    setAllProblems([...staticProblems, ...dynamicProblems]);
+  }, [dbProblems]);
+  
+  const problems = allProblems;
 
   if (!isOpen) return null;
 

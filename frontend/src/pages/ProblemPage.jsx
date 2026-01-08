@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { PROBLEMS } from "../data/problems";
 import Navbar from "../components/Navbar";
+import { useQuery } from "@tanstack/react-query";
+import { problemApi } from "../api/problems";
 
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import ProblemDescription from "../components/ProblemDescription";
@@ -16,31 +18,49 @@ function ProblemPage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [currentProblemId, setCurrentProblemId] = useState("two-sum");
-  const [selectedLanguage, setSelectedLanguage] = useState("java");
-  const [code, setCode] = useState(PROBLEMS[currentProblemId].starterCode.javascript);
+  const [currentProblem, setCurrentProblem] = useState(null);
+  const [allProblems, setAllProblems] = useState([]);
+  const [selectedLanguage, setSelectedLanguage] = useState("python");
+  const [code, setCode] = useState("");
   const [output, setOutput] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
 
-  const currentProblem = PROBLEMS[currentProblemId];
+  // Fetch problems from database
+  const { data: dbProblems } = useQuery({
+    queryKey: ["problems"],
+    queryFn: problemApi.getProblems,
+  });
 
-  // update problem when URL param changes
+  // Combine static and database problems
   useEffect(() => {
-    if (id && PROBLEMS[id]) {
-      setCurrentProblemId(id);
-      setCode(PROBLEMS[id].starterCode[selectedLanguage]);
-      setOutput(null);
+    const staticProblems = Object.values(PROBLEMS);
+    const dynamicProblems = dbProblems?.problems || [];
+    const combined = [...staticProblems, ...dynamicProblems];
+    setAllProblems(combined);
+    
+    // Find current problem by ID
+    const problem = combined.find(p => p.id === id);
+    if (problem) {
+      setCurrentProblem(problem);
+      setCode(problem.starterCode?.[selectedLanguage] || "");
     }
-  }, [id, selectedLanguage]);
+  }, [id, selectedLanguage, dbProblems]);
 
   const handleLanguageChange = (e) => {
     const newLang = e.target.value;
     setSelectedLanguage(newLang);
-    setCode(currentProblem.starterCode[newLang]);
+    if (currentProblem?.starterCode?.[newLang]) {
+      setCode(currentProblem.starterCode[newLang]);
+    }
     setOutput(null);
+    setIsAccepted(false);
   };
 
-  const handleProblemChange = (newProblemId) => navigate(`/problem/${newProblemId}`);
+  const handleProblemChange = (newProblemId) => {
+    setIsAccepted(false);
+    navigate(`/problem/${newProblemId}`);
+  };
 
   const triggerConfetti = () => {
     confetti({
@@ -84,6 +104,7 @@ function ProblemPage() {
   const handleRunCode = async () => {
     setIsRunning(true);
     setOutput(null);
+    setIsAccepted(false);
 
     const result = await executeCode(selectedLanguage, code);
     setOutput(result);
@@ -92,14 +113,17 @@ function ProblemPage() {
     // check if code executed successfully and matches expected output
 
     if (result.success) {
-      const expectedOutput = currentProblem.expectedOutput[selectedLanguage];
-      const testsPassed = checkIfTestsPassed(result.output, expectedOutput);
-
-      if (testsPassed) {
-        triggerConfetti();
-        toast.success("All tests passed! Great job!");
-      } else {
-        toast.error("Tests failed. Check your output!");
+      const expectedOutput = currentProblem?.expectedOutput?.[selectedLanguage];
+      if (expectedOutput) {
+        const testsPassed = checkIfTestsPassed(result.output, expectedOutput);
+        
+        if (testsPassed) {
+          setIsAccepted(true);
+          triggerConfetti();
+          toast.success("All tests passed! Great job!");
+        } else {
+          toast.error("Tests failed. Check your output!");
+        }
       }
     } else {
       toast.error("Code execution failed!");
@@ -110,15 +134,24 @@ function ProblemPage() {
     <div className="h-screen bg-base-100 flex flex-col">
       <Navbar />
 
-      <div className="flex-1">
+      {!currentProblem ? (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-2">Problem not found</h2>
+            <p className="text-base-content/60">The problem you're looking for doesn't exist.</p>
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1">
         <PanelGroup direction="horizontal">
           {/* left panel- problem desc */}
           <Panel defaultSize={40} minSize={30}>
             <ProblemDescription
               problem={currentProblem}
-              currentProblemId={currentProblemId}
+              currentProblemId={currentProblem?.id}
               onProblemChange={handleProblemChange}
-              allProblems={Object.values(PROBLEMS)}
+              allProblems={allProblems}
+              isAccepted={isAccepted}
             />
           </Panel>
 
@@ -149,7 +182,8 @@ function ProblemPage() {
             </PanelGroup>
           </Panel>
         </PanelGroup>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
