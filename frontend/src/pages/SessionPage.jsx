@@ -21,6 +21,7 @@ function SessionPage() {
   const { user } = useUser();
   const [output, setOutput] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
 
   const { data: sessionData, isLoading: loadingSession, refetch } = useSessionById(id);
 
@@ -45,6 +46,62 @@ function SessionPage() {
 
   const [selectedLanguage, setSelectedLanguage] = useState("javascript");
   const [code, setCode] = useState(problemData?.starterCode?.[selectedLanguage] || "");
+
+  // Sync code changes via Stream chat
+  const syncCodeChange = async (newCode, language) => {
+    if (!channel || !user?.id) return;
+    
+    try {
+      await channel.sendMessage({
+        text: `Code updated by ${user.firstName || 'User'}`,
+        code_content: newCode,
+        code_language: language,
+        sync_type: 'code_change'
+      });
+    } catch (error) {
+      console.error('Failed to sync code:', error);
+    }
+  };
+
+  // Listen for code changes from other users
+  useEffect(() => {
+    if (!channel || !user?.id) return;
+
+    const handleNewMessage = (event) => {
+      const message = event.message;
+      if (message.user.id !== user.id) {
+        if (message.sync_type === 'code_change') {
+          // Clear timeout to prevent sync conflicts
+          clearTimeout(window.codeChangeTimeout);
+          
+          if (message.code_content !== undefined) {
+            setCode(message.code_content);
+          }
+          if (message.code_language) {
+            setSelectedLanguage(message.code_language);
+          }
+        } else if (message.sync_type === 'output_change') {
+          if (message.output_result) {
+            try {
+              const outputData = JSON.parse(message.output_result);
+              setOutput(outputData);
+            } catch (error) {
+              console.error('Failed to parse output:', error);
+            }
+          }
+        } else if (message.sync_type === 'accepted_change') {
+          if (message.accepted_status) {
+            setIsAccepted(true);
+          }
+        }
+      }
+    };
+
+    channel.on('message.new', handleNewMessage);
+    return () => {
+      channel.off('message.new', handleNewMessage);
+    };
+  }, [channel, user?.id]);
 
   // auto-join session if user is not already a participant and not the host
   useEffect(() => {
@@ -77,15 +134,76 @@ function SessionPage() {
     const starterCode = problemData?.starterCode?.[newLang] || "";
     setCode(starterCode);
     setOutput(null);
+    // Sync language change
+    syncCodeChange(starterCode, newLang);
+  };
+
+  const handleCodeChange = (value) => {
+    setCode(value || '');
+    // Sync code change with debouncing
+    clearTimeout(window.codeChangeTimeout);
+    window.codeChangeTimeout = setTimeout(() => {
+      syncCodeChange(value || '', selectedLanguage);
+    }, 500);
   };
 
   const handleRunCode = async () => {
     setIsRunning(true);
     setOutput(null);
+    setIsAccepted(false);
 
     const result = await executeCode(selectedLanguage, code);
     setOutput(result);
+    
+    let accepted = false;
+    // Check if output matches expected output
+    if (result.success && problemData?.expectedOutput?.[selectedLanguage]) {
+      const expectedOutput = problemData.expectedOutput[selectedLanguage].trim();
+      const actualOutput = result.output.trim();
+      
+      if (actualOutput === expectedOutput) {
+        setIsAccepted(true);
+        accepted = true;
+      }
+    }
+    
     setIsRunning(false);
+    
+    // Sync output and acceptance status to other users
+    syncOutput(result);
+    if (accepted) {
+      syncAccepted(true);
+    }
+  };
+
+  // Sync output results
+  const syncOutput = async (outputResult) => {
+    if (!channel || !user?.id) return;
+    
+    try {
+      await channel.sendMessage({
+        text: `Code executed by ${user.firstName || 'User'}`,
+        output_result: JSON.stringify(outputResult),
+        sync_type: 'output_change'
+      });
+    } catch (error) {
+      console.error('Failed to sync output:', error);
+    }
+  };
+
+  // Sync accepted status
+  const syncAccepted = async (accepted) => {
+    if (!channel || !user?.id) return;
+    
+    try {
+      await channel.sendMessage({
+        text: `Problem ${accepted ? 'solved' : 'attempted'} by ${user.firstName || 'User'}`,
+        accepted_status: accepted,
+        sync_type: 'accepted_change'
+      });
+    } catch (error) {
+      console.error('Failed to sync accepted status:', error);
+    }
   };
 
   const handleEndSession = () => {
@@ -129,6 +247,11 @@ function SessionPage() {
                       </div>
 
                       <div className="flex items-center gap-3">
+                        {isAccepted && (
+                          <span className="badge badge-success badge-lg gap-2">
+                            ✓ Accepted
+                          </span>
+                        )}
                         <span
                           className={`badge badge-lg ${getDifficultyBadgeClass(
                             session?.difficulty
@@ -242,7 +365,7 @@ function SessionPage() {
                       code={code}
                       isRunning={isRunning}
                       onLanguageChange={handleLanguageChange}
-                      onCodeChange={(value) => setCode(value)}
+                      onCodeChange={handleCodeChange}
                       onRunCode={handleRunCode}
                     />
                   </Panel>
