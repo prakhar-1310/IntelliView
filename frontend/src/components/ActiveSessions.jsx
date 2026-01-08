@@ -8,9 +8,41 @@ import {
   LoaderIcon,
 } from "lucide-react";
 import { Link } from "react-router";
+import { useState } from "react";
 import { getDifficultyBadgeClass } from "../lib/utils";
+import JoinSessionModal from "./JoinSessionModal";
+import { useJoinSession } from "../hooks/useSessions";
 
 function ActiveSessions({ sessions, isLoading, isUserInSession }) {
+  const [selectedSession, setSelectedSession] = useState(null);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const joinSessionMutation = useJoinSession();
+
+  const handleJoinClick = (session) => {
+    if (isUserInSession(session)) {
+      // User is already in session, redirect directly
+      window.location.href = `/session/${session._id}`;
+    } else {
+      // Show password modal
+      setSelectedSession(session);
+      setShowPasswordModal(true);
+    }
+  };
+
+  const handleJoinWithPassword = (password) => {
+    if (selectedSession) {
+      joinSessionMutation.mutate(
+        { sessionId: selectedSession._id, password },
+        {
+          onSuccess: () => {
+            setShowPasswordModal(false);
+            setSelectedSession(null);
+            window.location.href = `/session/${selectedSession._id}`;
+          },
+        }
+      );
+    }
+  };
   return (
     <div className="lg:col-span-2 card bg-base-100 border-2 border-primary/20 hover:border-primary/30 h-full">
       <div className="card-body">
@@ -84,10 +116,13 @@ function ActiveSessions({ sessions, isLoading, isUserInSession }) {
                   {session.participant && !isUserInSession(session) ? (
                     <button className="btn btn-disabled btn-sm">Full</button>
                   ) : (
-                    <Link to={`/session/${session._id}`} className="btn btn-primary btn-sm gap-2">
+                    <button 
+                      onClick={() => handleJoinClick(session)}
+                      className="btn btn-primary btn-sm gap-2"
+                    >
                       {isUserInSession(session) ? "Rejoin" : "Join"}
                       <ArrowRightIcon className="size-4" />
-                    </Link>
+                    </button>
                   )}
                 </div>
               </div>
@@ -103,6 +138,17 @@ function ActiveSessions({ sessions, isLoading, isUserInSession }) {
           )}
         </div>
       </div>
+
+      <JoinSessionModal
+        isOpen={showPasswordModal}
+        onClose={() => {
+          setShowPasswordModal(false);
+          setSelectedSession(null);
+        }}
+        onJoin={handleJoinWithPassword}
+        isJoining={joinSessionMutation.isPending}
+        sessionTitle={selectedSession?.problem}
+      />
     </div>
   );
 }

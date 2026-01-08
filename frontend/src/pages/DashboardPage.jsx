@@ -9,6 +9,7 @@ import StatsCards from "../components/StatsCard";
 import ActiveSessions from "../components/ActiveSessions";
 import RecentSessions from "../components/RecentSessions";
 import CreateSessionModal from "../components/CreateSessionsModal";
+import SessionPasswordDisplay from "../components/SessionPasswordDisplay";
 
 function DashboardPage() {
   const navigate = useNavigate();
@@ -40,6 +41,13 @@ function DashboardPage() {
 
   const activeSessions = activeSessionsData?.sessions || [];
   const recentSessions = recentSessionsData?.sessions || [];
+  
+  // Filter sessions hosted by current user
+  const myHostedSessions = activeSessions.filter(session => 
+    session.host?.clerkId === user.id
+  );
+  
+  const hasActiveSession = myHostedSessions.length > 0;
 
   const isUserInSession = (session) => {
     if (!user.id) return false;
@@ -51,10 +59,23 @@ function DashboardPage() {
     <>
       <div className="min-h-screen bg-base-300">
         <Navbar />
-        <WelcomeSection onCreateSession={() => setShowCreateModal(true)} />
+        <WelcomeSection 
+          onCreateSession={() => setShowCreateModal(true)} 
+          hasActiveSession={hasActiveSession}
+        />
 
         {/* Grid layout */}
         <div className="container mx-auto px-6 pb-16">
+          {/* Session Passwords for Host */}
+          {myHostedSessions.length > 0 && (
+            <div className="mb-6">
+              <SessionPasswordDisplay 
+                sessions={myHostedSessions} 
+                isLoading={loadingActiveSessions} 
+              />
+            </div>
+          )}
+          
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <StatsCards
               activeSessionsCount={activeSessions.length}

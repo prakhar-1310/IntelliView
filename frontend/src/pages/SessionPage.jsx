@@ -120,6 +120,11 @@ function SessionPage() {
                         <p className="text-base-content/60 mt-2">
                           Host: {session?.host?.name || "Loading..."} •{" "}
                           {session?.participant ? 2 : 1}/2 participants
+                          {session?.password && (
+                            <span className="ml-3">
+                              • Password: <code className="bg-base-300 px-2 py-1 rounded font-mono font-bold">{session.password}</code>
+                            </span>
+                          )}
                         </p>
                       </div>
 
