@@ -9,6 +9,7 @@ import {inngest,functions} from "./lib/inngest.js"
 import {ENV} from "./lib/env.js";
 import chatRoutes from "./routes/chatRoutes.js"
 import sessionRoutes from "./routes/sessionRoutes.js";
+import problemRoutes from "./routes/problemRoutes.js";
 
 
 const app = express();
@@ -23,6 +24,7 @@ app.use("/api/inngest", serve({client:inngest, functions}))
 app.use(clerkMiddleware()); // this will adds auth field to request object: req.auth()
 app.use("/api/chat", chatRoutes); // For any request starting with /api/chat, hand it over to chatRoutes.
 app.use("/api/sessions", sessionRoutes);
+app.use("/api/problems", problemRoutes);
 
 app.get("/msg", (req,res)=>{
     res.status(200).json({

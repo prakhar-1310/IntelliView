@@ -1,7 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
+import { problemApi } from "../api/problems";
+import toast from "react-hot-toast";
+import { useNavigate, useSearchParams } from "react-router";
 
 function AddProblem() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get('edit');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [form, setForm] = useState({
     id: "",
     title: "",
@@ -11,62 +19,100 @@ function AddProblem() {
     notes: "",
     examples: "",
     constraints: "",
-    jsCode: "",
     pyCode: "",
     javaCode: "",
-    jsOutput: "",
+    cppCode: "",
     pyOutput: "",
     javaOutput: "",
+    cppOutput: "",
   });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  // Load problem data for editing
+  useEffect(() => {
+    if (editId) {
+      setIsEditing(true);
+      setIsLoading(true);
+      problemApi.getProblemById(editId)
+        .then(data => {
+          const problem = data.problem;
+          setForm({
+            id: problem.id,
+            title: problem.title,
+            difficulty: problem.difficulty,
+            category: problem.category,
+            descriptionText: problem.description.text,
+            notes: problem.description.notes.join('\n'),
+            examples: problem.examples.map(ex => 
+              `${ex.input}\n${ex.output}${ex.explanation ? '\n' + ex.explanation : ''}`
+            ).join('\n\n'),
+            constraints: problem.constraints.join('\n'),
+            pyCode: problem.starterCode.python || '',
+            javaCode: problem.starterCode.java || '',
+            cppCode: problem.starterCode.cpp || '',
+            pyOutput: problem.expectedOutput.python || '',
+            javaOutput: problem.expectedOutput.java || '',
+            cppOutput: problem.expectedOutput.cpp || '',
+          });
+        })
+        .catch(() => toast.error('Failed to load problem'))
+        .finally(() => setIsLoading(false));
+    }
+  }, [editId]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
-    /** EXACT SAME FORMAT AS problems.js */
-    const newProblem = {
-      id: form.id,
-      title: form.title,
-      difficulty: form.difficulty,
-      category: form.category,
-      description: {
-        text: form.descriptionText,
-        notes: form.notes.split("\n").filter(Boolean),
-      },
-      examples: form.examples
-        .split("\n\n")
-        .map((ex) => {
-          const lines = ex.split("\n");
-          return {
-            input: lines[0] || "",
-            output: lines[1] || "",
-            explanation: lines[2] || undefined,
-          };
-        }),
-      constraints: form.constraints.split("\n").filter(Boolean),
-      starterCode: {
-        javascript: form.jsCode,
-        python: form.pyCode,
-        java: form.javaCode,
-      },
-      expectedOutput: {
-        javascript: form.jsOutput,
-        python: form.pyOutput,
-        java: form.javaOutput,
-      },
-    };
+    try {
+      const newProblem = {
+        id: form.id,
+        title: form.title,
+        difficulty: form.difficulty,
+        category: form.category,
+        description: {
+          text: form.descriptionText,
+          notes: form.notes.split("\n").filter(Boolean),
+        },
+        examples: form.examples
+          .split("\n\n")
+          .map((ex) => {
+            const lines = ex.split("\n");
+            return {
+              input: lines[0] || "",
+              output: lines[1] || "",
+              explanation: lines[2] || undefined,
+            };
+          }),
+        constraints: form.constraints.split("\n").filter(Boolean),
+        starterCode: {
+          python: form.pyCode,
+          java: form.javaCode,
+          cpp: form.cppCode,
+        },
+        expectedOutput: {
+          python: form.pyOutput,
+          java: form.javaOutput,
+          cpp: form.cppOutput,
+        },
+      };
 
-    console.log("NEW PROBLEM OBJECT 👉", newProblem);
-
-    /**
-     * Later:
-     * POST this object to backend
-     * Save in DB
-     * Load for all users
-     */
+      if (isEditing) {
+        await problemApi.updateProblem(editId, newProblem);
+        toast.success("Problem updated successfully!");
+      } else {
+        await problemApi.createProblem(newProblem);
+        toast.success("Problem created successfully!");
+      }
+      navigate("/problems");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to create problem");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -74,20 +120,23 @@ function AddProblem() {
       <Navbar />
 
       <div className="max-w-4xl mx-auto px-4 py-10">
-        <h1 className="text-3xl font-bold mb-6">Add New Problem</h1>
+        <h1 className="text-3xl font-bold mb-6">{isEditing ? 'Edit Problem' : 'Add New Problem'}</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
 
           <input name="id" placeholder="problem-id (unique)"
             className="input input-bordered w-full"
+            value={form.id}
             onChange={handleChange} />
 
           <input name="title" placeholder="Title"
             className="input input-bordered w-full"
+            value={form.title}
             onChange={handleChange} />
 
           <select name="difficulty"
             className="select select-bordered w-full"
+            value={form.difficulty}
             onChange={handleChange}>
             <option>Easy</option>
             <option>Medium</option>
@@ -96,14 +145,17 @@ function AddProblem() {
 
           <input name="category" placeholder="Category (Array • DP)"
             className="input input-bordered w-full"
+            value={form.category}
             onChange={handleChange} />
 
           <textarea name="descriptionText" placeholder="Problem Description"
             className="textarea textarea-bordered w-full"
+            value={form.descriptionText}
             onChange={handleChange} />
 
           <textarea name="notes" placeholder="Notes (one per line)"
             className="textarea textarea-bordered w-full"
+            value={form.notes}
             onChange={handleChange} />
 
           <textarea name="examples"
@@ -114,39 +166,47 @@ explanation (optional)
 
 (blank line between examples)`}
             className="textarea textarea-bordered w-full"
+            value={form.examples}
             onChange={handleChange} />
 
           <textarea name="constraints"
             placeholder="Constraints (one per line)"
             className="textarea textarea-bordered w-full"
-            onChange={handleChange} />
-
-          <textarea name="jsCode" placeholder="JavaScript Starter Code"
-            className="textarea textarea-bordered w-full"
+            value={form.constraints}
             onChange={handleChange} />
 
           <textarea name="pyCode" placeholder="Python Starter Code"
             className="textarea textarea-bordered w-full"
+            value={form.pyCode}
             onChange={handleChange} />
 
           <textarea name="javaCode" placeholder="Java Starter Code"
             className="textarea textarea-bordered w-full"
+            value={form.javaCode}
             onChange={handleChange} />
 
-          <textarea name="jsOutput" placeholder="JS Expected Output"
+          <textarea name="cppCode" placeholder="C++ Starter Code"
             className="textarea textarea-bordered w-full"
+            value={form.cppCode}
             onChange={handleChange} />
 
           <textarea name="pyOutput" placeholder="Python Expected Output"
             className="textarea textarea-bordered w-full"
+            value={form.pyOutput}
             onChange={handleChange} />
 
           <textarea name="javaOutput" placeholder="Java Expected Output"
             className="textarea textarea-bordered w-full"
+            value={form.javaOutput}
             onChange={handleChange} />
 
-          <button className="btn btn-primary w-full">
-            Save Problem
+          <textarea name="cppOutput" placeholder="C++ Expected Output"
+            className="textarea textarea-bordered w-full"
+            value={form.cppOutput}
+            onChange={handleChange} />
+
+          <button className="btn btn-primary w-full" disabled={isLoading}>
+            {isLoading ? "Loading..." : isEditing ? "Update Problem" : "Save Problem"}
           </button>
         </form>
       </div>

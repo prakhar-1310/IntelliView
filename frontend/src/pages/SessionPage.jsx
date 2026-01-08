@@ -10,6 +10,8 @@ import { getDifficultyBadgeClass } from "../lib/utils";
 import { Loader2Icon, LogOutIcon, PhoneOffIcon } from "lucide-react";
 import CodeEditorPanel from "../components/CodeEditorPanel";
 import OutputPanel from "../components/OutputPanel";
+import { useQuery } from "@tanstack/react-query";
+import { problemApi } from "../api/problems";
 
 import useStreamClient from "../hooks/useStreamClient";
 import { StreamCall, StreamVideo } from "@stream-io/video-react-sdk";
@@ -22,8 +24,16 @@ function SessionPage() {
   const [output, setOutput] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
   const [isAccepted, setIsAccepted] = useState(false);
+  const [allProblems, setAllProblems] = useState([]);
+  const [problemData, setProblemData] = useState(null);
 
   const { data: sessionData, isLoading: loadingSession, refetch } = useSessionById(id);
+
+  // Fetch problems from database
+  const { data: dbProblems } = useQuery({
+    queryKey: ["problems"],
+    queryFn: problemApi.getProblems,
+  });
 
   const joinSessionMutation = useJoinSession();
   const endSessionMutation = useEndSession();
@@ -39,12 +49,26 @@ function SessionPage() {
     isParticipant
   );
 
-  // find the problem data based on session problem title
-  const problemData = session?.problem
-    ? Object.values(PROBLEMS).find((p) => p.title === session.problem)
-    : null;
+  // Combine static and database problems and find current problem
+  useEffect(() => {
+    const staticProblems = Object.values(PROBLEMS);
+    const dynamicProblems = dbProblems?.problems || [];
+    const combined = [...staticProblems, ...dynamicProblems];
+    setAllProblems(combined);
+    
+    // Find problem data based on session problem title
+    if (session?.problem) {
+      const foundProblem = combined.find((p) => p.title === session.problem);
+      setProblemData(foundProblem || null);
+    }
+  }, [dbProblems, session?.problem]);
 
-  const [selectedLanguage, setSelectedLanguage] = useState("javascript");
+  // find the problem data based on session problem title
+  // const problemData = session?.problem
+  //   ? Object.values(PROBLEMS).find((p) => p.title === session.problem)
+  //   : null;
+
+  const [selectedLanguage, setSelectedLanguage] = useState("python");
   const [code, setCode] = useState(problemData?.starterCode?.[selectedLanguage] || "");
 
   // Sync code changes via Stream chat

@@ -23,23 +23,35 @@ function WelcomeSection({ onCreateSession, hasActiveSession }) {
             </p>
           </div>
           <div className="text-right">
-            <button
-              onClick={onCreateSession}
-              disabled={hasActiveSession}
-              className={`group px-8 py-4 rounded-2xl transition-all duration-200 ${
-                hasActiveSession 
-                  ? 'bg-base-300 text-base-content/50 cursor-not-allowed'
-                  : 'bg-gradient-to-r from-primary to-secondary hover:opacity-90'
-              }`}
-            >
-              <div className="flex items-center gap-3 font-bold text-lg">
-                <ZapIcon className="w-6 h-6" />
-                <span>{hasActiveSession ? 'Session Active' : 'Create Session'}</span>
-                {!hasActiveSession && (
+            <div className="flex gap-3">
+              <button
+                onClick={() => {}}
+                className="group px-8 py-4 rounded-2xl transition-all duration-200 bg-gradient-to-r from-accent to-warning hover:opacity-90"
+              >
+                <div className="flex items-center gap-3 font-bold text-lg">
+                  <SparklesIcon className="w-6 h-6" />
+                  <span>Mock Interview</span>
                   <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                )}
-              </div>
-            </button>
+                </div>
+              </button>
+              <button
+                onClick={onCreateSession}
+                disabled={hasActiveSession}
+                className={`group px-8 py-4 rounded-2xl transition-all duration-200 ${
+                  hasActiveSession 
+                    ? 'bg-base-300 text-base-content/50 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-primary to-secondary hover:opacity-90'
+                }`}
+              >
+                <div className="flex items-center gap-3 font-bold text-lg">
+                  <ZapIcon className="w-6 h-6" />
+                  <span>{hasActiveSession ? 'Session Active' : 'Create Session'}</span>
+                  {!hasActiveSession && (
+                    <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  )}
+                </div>
+              </button>
+            </div>
             {hasActiveSession && (
               <p className="text-sm text-base-content/60 mt-2">
                 End your current session to create a new one

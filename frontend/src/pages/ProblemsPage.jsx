@@ -1,14 +1,61 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Navbar from "../components/Navbar";
 
 import { PROBLEMS } from "../data/problems";
-import { ChevronRightIcon, Code2Icon } from "lucide-react";
+import { ChevronRightIcon, Code2Icon, EditIcon, TrashIcon } from "lucide-react";
 import { getDifficultyBadgeClass } from "../lib/utils";
-import AddProblem from "./AddProblem";
+import { useUser } from "@clerk/clerk-react";
+import { isAdmin } from "../lib/admin";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { problemApi } from "../api/problems";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 
 function ProblemsPage() {
-  const problems = Object.values(PROBLEMS);
+  const { user } = useUser();
+  const navigate = useNavigate();
+  const [allProblems, setAllProblems] = useState([]);
+  const queryClient = useQueryClient();
+  
+  // Fetch problems from database
+  const { data: dbProblems } = useQuery({
+    queryKey: ["problems"],
+    queryFn: problemApi.getProblems,
+  });
+  
+  // Delete problem mutation
+  const deleteMutation = useMutation({
+    mutationFn: problemApi.deleteProblem,
+    onSuccess: () => {
+      toast.success("Problem deleted successfully!");
+      queryClient.invalidateQueries(["problems"]);
+    },
+    onError: () => {
+      toast.error("Failed to delete problem");
+    },
+  });
+  
+  // Combine static problems with database problems
+  useEffect(() => {
+    const staticProblems = Object.values(PROBLEMS);
+    const dynamicProblems = dbProblems?.problems || [];
+    setAllProblems([...staticProblems, ...dynamicProblems]);
+  }, [dbProblems]);
+  
+  const problems = allProblems;
+  
+  const handleEdit = (problem) => {
+    if (problem._id) {
+      navigate(`/add-problem?edit=${problem._id}`);
+    }
+  };
+
+  const handleDelete = (problem) => {
+    if (problem._id && confirm(`Are you sure you want to delete "${problem.title}"?`)) {
+      deleteMutation.mutate(problem._id);
+    }
+  };
 
   const easyProblemsCount = problems.filter((p) => p.difficulty === "Easy").length;
   const mediumProblemsCount = problems.filter((p) => p.difficulty === "Medium").length;
@@ -31,7 +78,7 @@ function ProblemsPage() {
 
           <Link
             to="/add-problem"
-            className="btn btn-primary"
+            className={`btn btn-primary ${!isAdmin(user) ? 'hidden' : ''}`}
           >
             + Add Problem
           </Link>
@@ -67,10 +114,37 @@ function ProblemsPage() {
                     <p className="text-base-content/80 mb-3">{problem.description.text}</p>
                   </div>
                   {/* RIGHT SIDE */}
-
-                  <div className="flex items-center gap-2 text-primary">
-                    <span className="font-medium">Solve</span>
-                    <ChevronRightIcon className="size-5" />
+                  <div className="flex items-center gap-2">
+                    {isAdmin(user) && (
+                      <>
+                        <button 
+                          className="btn btn-sm btn-ghost"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleEdit(problem);
+                          }}
+                          disabled={!problem._id}
+                          title={!problem._id ? "Cannot edit static problems" : "Edit problem"}
+                        >
+                          <EditIcon className="size-4" />
+                        </button>
+                        <button 
+                          className="btn btn-sm btn-ghost text-error"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleDelete(problem);
+                          }}
+                          disabled={!problem._id || deleteMutation.isPending}
+                          title={!problem._id ? "Cannot delete static problems" : "Delete problem"}
+                        >
+                          <TrashIcon className="size-4" />
+                        </button>
+                      </>
+                    )}
+                    <div className="flex items-center gap-2 text-primary">
+                      <span className="font-medium">Solve</span>
+                      <ChevronRightIcon className="size-5" />
+                    </div>
                   </div>
                 </div>
               </div>
