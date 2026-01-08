@@ -3,11 +3,11 @@ import { Navigate, Route, Routes } from "react-router";
 import HomePage from "./pages/HomePage";
 
 import { Toaster } from "react-hot-toast";
+import AddProblem from "./pages/AddProblem";
 import DashboardPage from "./pages/DashboardPage";
 import ProblemPage from "./pages/ProblemPage";
 import ProblemsPage from "./pages/ProblemsPage";
 import SessionPage from "./pages/SessionPage";
-import AddProblem from "./pages/AddProblem";
 
 function App() {
   const { isSignedIn, isLoaded } = useUser();
