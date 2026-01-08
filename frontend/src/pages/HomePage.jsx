@@ -101,11 +101,11 @@ function HomePage() {
             {/* STATS */}
             <div className="stats stats-vertical lg:stats-horizontal bg-base-100 shadow-lg">
               <div className="stat">
-                <div className="stat-value text-primary">10K+</div>
+                <div className="stat-value text-primary">1K+</div>
                 <div className="stat-title">Active Users</div>
               </div>
               <div className="stat">
-                <div className="stat-value text-secondary">50K+</div>
+                <div className="stat-value text-secondary">5K+</div>
                 <div className="stat-title">Sessions</div>
               </div>
               <div className="stat">
