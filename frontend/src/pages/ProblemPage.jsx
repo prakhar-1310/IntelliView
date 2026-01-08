@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ProblemPage() {
+const ProblemPage = () => {
   return (
     <div>ProblemPage</div>
   )
