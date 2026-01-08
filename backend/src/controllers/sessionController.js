@@ -1,6 +1,11 @@
 import { chatClient, streamClient } from "../lib/stream.js";
 import Session from "../models/Session.js";
 
+// Generate random 6-digit password
+function generateSessionPassword() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
 export async function createSession(req, res) {
   try {
     const { problem, difficulty } = req.body;
@@ -11,11 +16,24 @@ export async function createSession(req, res) {
       return res.status(400).json({ message: "Problem and difficulty are required" });
     }
 
+    // Check if user already has an active session as host
+    const existingSession = await Session.findOne({ 
+      host: userId, 
+      status: "active" 
+    });
+    
+    if (existingSession) {
+      return res.status(400).json({ 
+        message: "You already have an active session. Please end it before creating a new one." 
+      });
+    }
+
     // generate a unique call id for stream video
     const callId = `session_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+    const password = generateSessionPassword();
 
     // create session in db
-    const session = await Session.create({ problem, difficulty, host: userId, callId });
+    const session = await Session.create({ problem, difficulty, host: userId, callId, password });
 
     // create stream video call
     await streamClient.video.call("default", callId).getOrCreate({
@@ -95,6 +113,7 @@ export async function getSessionById(req, res) {
 export async function joinSession(req, res) {
   try {
     const { id } = req.params;
+    const { password } = req.body;
     const userId = req.user._id;
     const clerkId = req.user.clerkId;
 
@@ -108,6 +127,11 @@ export async function joinSession(req, res) {
 
     if (session.host.toString() === userId.toString()) {
       return res.status(400).json({ message: "Host cannot join their own session as participant" });
+    }
+
+    // Verify password
+    if (session.password !== password) {
+      return res.status(401).json({ message: "Invalid session password" });
     }
 
     // check if session is already full - has a participant

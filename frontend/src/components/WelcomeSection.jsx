@@ -2,7 +2,7 @@
 import { useUser } from "@clerk/clerk-react";
 import { ArrowRightIcon, SparklesIcon, ZapIcon } from "lucide-react";
 
-function WelcomeSection({ onCreateSession }) {
+function WelcomeSection({ onCreateSession, hasActiveSession }) {
   const { user } = useUser();
 
   return (
@@ -22,16 +22,30 @@ function WelcomeSection({ onCreateSession }) {
               Ready to level up your coding skills?
             </p>
           </div>
-          <button
-            onClick={onCreateSession}
-            className="group px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-2xl transition-all duration-200 hover:opacity-90"
-          >
-            <div className="flex items-center gap-3 text-white font-bold text-lg">
-              <ZapIcon className="w-6 h-6" />
-              <span>Create Session</span>
-              <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </div>
-          </button>
+          <div className="text-right">
+            <button
+              onClick={onCreateSession}
+              disabled={hasActiveSession}
+              className={`group px-8 py-4 rounded-2xl transition-all duration-200 ${
+                hasActiveSession 
+                  ? 'bg-base-300 text-base-content/50 cursor-not-allowed'
+                  : 'bg-gradient-to-r from-primary to-secondary hover:opacity-90'
+              }`}
+            >
+              <div className="flex items-center gap-3 font-bold text-lg">
+                <ZapIcon className="w-6 h-6" />
+                <span>{hasActiveSession ? 'Session Active' : 'Create Session'}</span>
+                {!hasActiveSession && (
+                  <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                )}
+              </div>
+            </button>
+            {hasActiveSession && (
+              <p className="text-sm text-base-content/60 mt-2">
+                End your current session to create a new one
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>
