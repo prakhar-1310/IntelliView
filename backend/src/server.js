@@ -16,7 +16,7 @@ const __dirname = path.resolve();
 
 // middlewares
 app.use(express.json()); // express.json() is a built-in middleware in Express.js used to parse incoming HTTP request bodies that contain JSON data.
-app.use(cors({origin:ENV.CLIENT_URL,Credentials:true}));
+app.use(cors({origin:ENV.CLIENT_URL,credentials:true}));
 // credentials: true means server allows a browser to include cookies on request
 // CORS middleware is used to control who can access your backend APIs from a different origin (different domain, port, or protocol).
 app.use("/api/inngest", serve({client:inngest, functions}))
