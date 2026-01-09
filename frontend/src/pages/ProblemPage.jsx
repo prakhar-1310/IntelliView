@@ -37,10 +37,17 @@ function ProblemPage() {
     const staticProblems = Object.values(PROBLEMS);
     const dynamicProblems = dbProblems?.problems || [];
     const combined = [...staticProblems, ...dynamicProblems];
-    setAllProblems(combined);
     
-    // Find current problem by ID
-    const problem = combined.find(p => p.id === id);
+    // Add sequence number but keep original ID
+    const problemsWithSequence = combined.map((problem, index) => ({
+      ...problem,
+      sequenceNumber: index + 1,
+    }));
+    
+    setAllProblems(problemsWithSequence);
+    
+    // Find current problem by original ID
+    const problem = problemsWithSequence.find(p => p.id === id);
     if (problem) {
       setCurrentProblem(problem);
       setCode(problem.starterCode?.[selectedLanguage] || "");

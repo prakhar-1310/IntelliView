@@ -16,6 +16,8 @@ function ProblemsPage() {
   const { user } = useUser();
   const navigate = useNavigate();
   const [allProblems, setAllProblems] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("all");
   const queryClient = useQueryClient();
   
   // Fetch problems from database
@@ -40,7 +42,15 @@ function ProblemsPage() {
   useEffect(() => {
     const staticProblems = Object.values(PROBLEMS);
     const dynamicProblems = dbProblems?.problems || [];
-    setAllProblems([...staticProblems, ...dynamicProblems]);
+    const combined = [...staticProblems, ...dynamicProblems];
+    
+    // Add sequence number but keep original ID
+    const problemsWithSequence = combined.map((problem, index) => ({
+      ...problem,
+      sequenceNumber: index + 1,
+    }));
+    
+    setAllProblems(problemsWithSequence);
   }, [dbProblems]);
   
   const problems = allProblems;
@@ -57,9 +67,36 @@ function ProblemsPage() {
     }
   };
 
+  // Filter problems based on search query and difficulty
+  const filteredProblems = allProblems.filter((problem) => {
+    const searchLower = searchQuery.toLowerCase().trim();
+    
+    // If search is empty, return true for search part
+    if (!searchLower) {
+      const matchesDifficulty = 
+        selectedDifficulty === "all" || problem.difficulty === selectedDifficulty;
+      return matchesDifficulty;
+    }
+    
+    const matchesSearch = 
+      (problem.title && problem.title.toLowerCase().includes(searchLower)) ||
+      (problem.category && problem.category.toLowerCase().includes(searchLower)) ||
+      (problem.description?.text && problem.description.text.toLowerCase().includes(searchLower));
+    
+    const matchesDifficulty = 
+      selectedDifficulty === "all" || problem.difficulty === selectedDifficulty;
+    
+    return matchesSearch && matchesDifficulty;
+  });
+
   const easyProblemsCount = problems.filter((p) => p.difficulty === "Easy").length;
   const mediumProblemsCount = problems.filter((p) => p.difficulty === "Medium").length;
   const hardProblemsCount = problems.filter((p) => p.difficulty === "Hard").length;
+
+  // Calculate stats for filtered problems
+  const filteredEasyCount = filteredProblems.filter((p) => p.difficulty === "Easy").length;
+  const filteredMediumCount = filteredProblems.filter((p) => p.difficulty === "Medium").length;
+  const filteredHardCount = filteredProblems.filter((p) => p.difficulty === "Hard").length;
 
   return (
     <div className="min-h-screen bg-base-200">
@@ -84,10 +121,61 @@ function ProblemsPage() {
           </Link>
         </div>
 
+        {/* SEARCH AND FILTER SECTION */}
+        <div className="mb-8 space-y-4 bg-base-100 rounded-lg p-6 shadow-sm border border-base-300">
+          {/* Search Bar */}
+          <div>
+            <label className="block text-sm font-semibold mb-2 text-base-content">
+              Search Problems
+            </label>
+            <input
+              type="text"
+              placeholder="Search by title, category, or description..."
+              className="input input-bordered w-full"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {/* Difficulty Filter */}
+          <div>
+            <label className="block text-sm font-semibold mb-2 text-base-content">
+              Filter by Difficulty
+            </label>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedDifficulty("all")}
+                className={`btn btn-sm ${selectedDifficulty === "all" ? "btn-primary" : "btn-outline"}`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setSelectedDifficulty("Easy")}
+                className={`btn btn-sm ${selectedDifficulty === "Easy" ? "btn-success" : "btn-outline"}`}
+              >
+                Easy
+              </button>
+              <button
+                onClick={() => setSelectedDifficulty("Medium")}
+                className={`btn btn-sm ${selectedDifficulty === "Medium" ? "btn-warning" : "btn-outline"}`}
+              >
+                Medium
+              </button>
+              <button
+                onClick={() => setSelectedDifficulty("Hard")}
+                className={`btn btn-sm ${selectedDifficulty === "Hard" ? "btn-error" : "btn-outline"}`}
+              >
+                Hard
+              </button>
+            </div>
+          </div>
+        </div>
+
 
         {/* PROBLEMS LIST */}
         <div className="space-y-4">
-          {problems.map((problem) => (
+          {filteredProblems.length > 0 ? (
+            filteredProblems.map((problem) => (
             <Link
               key={problem.id}
               to={`/problem/${problem.id}`}
@@ -98,8 +186,8 @@ function ProblemsPage() {
                   {/* LEFT SIDE */}
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Code2Icon className="size-6 text-primary" />
+                      <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-lg text-primary">
+                        #{problem.id}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
@@ -149,7 +237,16 @@ function ProblemsPage() {
                 </div>
               </div>
             </Link>
-          ))}
+            ))
+          ) : (
+            <div className="card bg-base-100 shadow-sm">
+              <div className="card-body text-center">
+                <p className="text-base-content/60">
+                  No problems found matching your filters. Try adjusting your search or difficulty level.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* STATS FOOTER */}
@@ -157,21 +254,22 @@ function ProblemsPage() {
           <div className="card-body">
             <div className="stats stats-vertical lg:stats-horizontal">
               <div className="stat">
-                <div className="stat-title">Total Problems</div>
-                <div className="stat-value text-primary">{problems.length}</div>
+                <div className="stat-title">Showing Problems</div>
+                <div className="stat-value text-primary">{filteredProblems.length}</div>
+                <div className="stat-desc">out of {problems.length} total</div>
               </div>
 
               <div className="stat">
                 <div className="stat-title">Easy</div>
-                <div className="stat-value text-success">{easyProblemsCount}</div>
+                <div className="stat-value text-success">{filteredEasyCount}</div>
               </div>
               <div className="stat">
                 <div className="stat-title">Medium</div>
-                <div className="stat-value text-warning">{mediumProblemsCount}</div>
+                <div className="stat-value text-warning">{filteredMediumCount}</div>
               </div>
               <div className="stat">
                 <div className="stat-title">Hard</div>
-                <div className="stat-value text-error">{hardProblemsCount}</div>
+                <div className="stat-value text-error">{filteredHardCount}</div>
               </div>
             </div>
           </div>

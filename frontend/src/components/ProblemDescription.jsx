@@ -5,7 +5,10 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
       {/* HEADER SECTION */}
       <div className="p-6 bg-base-100 border-b border-base-300">
         <div className="flex items-start justify-between mb-3">
-          <h1 className="text-3xl font-bold text-base-content">{problem.title}</h1>
+          <div className="flex items-center gap-3">
+            <span className="badge badge-primary badge-lg font-bold">#{problem.id}</span>
+            <h1 className="text-3xl font-bold text-base-content">{problem.title}</h1>
+          </div>
           <div className="flex items-center gap-2">
             {isAccepted && (
               <span className="badge badge-success badge-lg gap-2">
@@ -28,7 +31,7 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
           >
             {allProblems.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.title} - {p.difficulty}
+                #{p.id} - {p.title} - {p.difficulty}
               </option>
             ))}
           </select>
