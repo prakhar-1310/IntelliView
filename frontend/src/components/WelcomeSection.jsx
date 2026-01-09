@@ -26,7 +26,7 @@ function WelcomeSection({ onCreateSession, hasActiveSession }) {
             <div className="flex gap-3">
               <button
                 onClick={() => {}}
-                className="group px-8 py-4 rounded-2xl transition-all duration-200 bg-gradient-to-r from-accent to-warning hover:opacity-90"
+                className="group px-8 py-4 rounded-2xl transition-all duration-200 bg-gradient-to-r from-primary to-secondary hover:opacity-90"
               >
                 <div className="flex items-center gap-3 font-bold text-lg">
                   <SparklesIcon className="w-6 h-6" />

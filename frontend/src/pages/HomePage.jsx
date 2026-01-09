@@ -7,6 +7,9 @@ import {
   UsersIcon,
   VideoIcon,
   ZapIcon,
+  Bot,
+  MessageSquareCode,
+  ChartNoAxesCombined
 } from "lucide-react";
 import { SignInButton } from "@clerk/clerk-react";
 import Footer from "./Footer";
@@ -93,8 +96,9 @@ function HomePage() {
               </SignInButton>
 
               <button className="btn btn-outline btn-lg">
-                <VideoIcon className="size-5" />
-                Watch Demo
+                <Bot className="size-5" />
+                Mock Interview
+                <ArrowRightIcon className="size-5" />
               </button>
             </div>
 
@@ -177,6 +181,66 @@ function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* <div className="text-center py-8">
+        <span className="text-base-content/60 font-medium">upcoming feature....</span>
+      </div> */}
+
+      {/* // upcoming feature */}
+      <div className="max-w-7xl mx-auto px-4 py-20">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4">
+            Everything You Need to <span className="text-primary font-mono">Ace Interviews</span>
+          </h2>
+          <p className="text-lg text-base-content/70 max-w-2xl mx-auto">
+            AI-powered tools designed to simulate real interviews and help you improve faster
+          </p>
+        </div>
+
+        {/* FEATURES GRID */}
+        <div className="grid md:grid-cols-3 gap-8">
+          {/* Feature 1 */}
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body items-center text-center">
+              <div className="size-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
+                <Bot className="size-8 text-primary" />
+              </div>
+              <h3 className="card-title">AI Mock Interviews</h3>
+              <p className="text-base-content/70">
+                AI interviewer that adapts questions based on your role, skill level, and performance—just like a real interview.
+              </p>
+            </div>
+          </div>
+
+          {/* Feature 2 */}
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body items-center text-center">
+              <div className="size-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
+                <MessageSquareCode className="size-8 text-primary" />
+              </div>
+              <h3 className="card-title">Instant AI Feedback</h3>
+              <p className="text-base-content/70">
+                Receive detailed feedback, problem-solving approach, communication skills within seconds.
+              </p>
+            </div>
+          </div>
+
+          {/* Feature 3 */}
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body items-center text-center">
+              <div className="size-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
+                <ChartNoAxesCombined className="size-8 text-primary" />
+              </div>
+              <h3 className="card-title">Performance Analytics</h3>
+              <p className="text-base-content/70">
+                Track your progress over time with interview scores, strengths, weaknesses, and improvement insights powered by AI.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
 
       <Footer/>
     </div>
