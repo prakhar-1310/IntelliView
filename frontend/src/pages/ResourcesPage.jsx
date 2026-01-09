@@ -7,8 +7,6 @@ function ResourcesPage() {
   const [filteredResources, setFilteredResources] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
 
   // Fetch resources from Dev.to API
   const fetchResources = async () => {
@@ -77,7 +75,6 @@ function ResourcesPage() {
     }
 
     setFilteredResources(filtered);
-    setCurrentPage(1); // Reset to first page when search changes
   }, [searchQuery, resources]);
 
   const formatDate = (date) => {
@@ -87,12 +84,6 @@ function ResourcesPage() {
       year: "numeric",
     }).format(date);
   };
-
-  // Pagination logic
-  const totalPages = Math.ceil(filteredResources.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedResources = filteredResources.slice(startIndex, endIndex);
 
   const ResourceCard = ({ resource }) => (
     <a
@@ -188,48 +179,11 @@ function ResourcesPage() {
             </div>
           </div>
         ) : filteredResources.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {paginatedResources.map((resource) => (
-                <ResourceCard key={resource.id} resource={resource} />
-              ))}
-            </div>
-
-            {/* PAGINATION */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-12">
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className="btn btn-sm"
-                >
-                  Previous
-                </button>
-
-                <div className="flex gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`btn btn-sm ${
-                        currentPage === page ? "btn-primary" : "btn-ghost"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                </div>
-
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                  className="btn btn-sm"
-                >
-                  Next
-                </button>
-              </div>
-            )}
-          </>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredResources.map((resource) => (
+              <ResourceCard key={resource.id} resource={resource} />
+            ))}
+          </div>
         ) : (
           <div className="card bg-base-100 shadow-sm">
             <div className="card-body text-center">

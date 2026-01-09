@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import { BookOpenIcon, LayoutDashboardIcon, SparklesIcon } from "lucide-react";
+import { BookOpenIcon, LayoutDashboardIcon, SparklesIcon, TrophyIcon, LibraryIcon } from "lucide-react";
 import { UserButton, useUser } from "@clerk/clerk-react";
 import { isAdmin } from "../lib/admin";
 
@@ -47,6 +47,42 @@ function Navbar() {
             <div className="flex items-center gap-x-2.5">
               <BookOpenIcon className="size-4" />
               <span className="font-medium hidden sm:inline">Problems</span>
+            </div>
+          </Link>
+
+          {/* CONTESTS PAGE LINK */}
+          <Link
+            to={"/contests"}
+            className={`px-4 py-2.5 rounded-lg transition-all duration-200 
+              ${
+                isActive("/contests")
+                  ? "bg-primary text-primary-content"
+                  : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
+              }
+              
+              `}
+          >
+            <div className="flex items-center gap-x-2.5">
+              <TrophyIcon className="size-4" />
+              <span className="font-medium hidden sm:inline">Contests</span>
+            </div>
+          </Link>
+
+          {/* RESOURCES PAGE LINK */}
+          <Link
+            to={"/resources"}
+            className={`px-4 py-2.5 rounded-lg transition-all duration-200 
+              ${
+                isActive("/resources")
+                  ? "bg-primary text-primary-content"
+                  : "hover:bg-base-200 text-base-content/70 hover:text-base-content"
+              }
+              
+              `}
+          >
+            <div className="flex items-center gap-x-2.5">
+              <LibraryIcon className="size-4" />
+              <span className="font-medium hidden sm:inline">Resources</span>
             </div>
           </Link>
 
