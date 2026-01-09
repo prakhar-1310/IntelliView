@@ -1,21 +1,22 @@
 <img width="1752" height="940" alt="image" src="https://github.com/user-attachments/assets/3edecece-ce28-4e53-9367-0d20f6ef2f98" />
 Home Page
-
+<Br>
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5efa3ef6-4585-4e49-8fd1-0e9cb5867c48" />
 Dashboard
-
+<Br>
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4764b48e-e109-4766-951b-00e86f61ed58" />
 Session Page
-
+<Br>
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cbd135b5-3060-48ea-8bea-a843a2874891" />
 Problem Page
-
+<Br>
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2fb8fd91-c446-44eb-b4cc-851a6eadadd2" />
 Contest Page
-
+<Br>
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fe2c53a2-32b2-4a03-b819-9036c18c83df" />
 Resource Page
-
+<Br>
+<Br>
 
 <!-- START -->
 ✨ Highlights:
