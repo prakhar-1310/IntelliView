@@ -25,9 +25,17 @@ function HomePage() {
             to={"/"}
             className="flex items-center gap-3 hover:scale-105 transition-transform duration-200"
           >
-            <div className="size-10 rounded-xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center shadow-lg">
+            {/* <div className="size-10 rounded-xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center shadow-lg">
               <SparklesIcon className="size-6 text-white" />
+            </div> */}
+            <div className="size-10 rounded-xl bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center shadow-lg">
+              <img
+                src="/logo.png"   // path to your logo
+                alt="Logo"
+                className="size-6 object-contain"
+              />
             </div>
+
 
             <div className="flex flex-col">
               <span className="font-black text-xl bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent font-mono tracking-wider">
@@ -66,8 +74,10 @@ function HomePage() {
             </h1>
 
             <p className="text-xl text-base-content/70 leading-relaxed max-w-xl">
-              The ultimate platform for collaborative coding interviews and pair programming.
-              Connect face-to-face, code in real-time, and ace your technical interviews.
+              {/* The ultimate platform for collaborative coding interviews and pair programming.
+              Connect face-to-face, code in real-time, and ace your technical interviews. */}
+              The all-in-one platform for real-time coding interviews, pair programming, and mock interview practice.
+              Connect live, code together, sharpen your skills, and crack technical interviews with confidence.
             </p>
 
             {/* FEATURE PILLS */}
