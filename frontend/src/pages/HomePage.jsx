@@ -54,7 +54,7 @@ function HomePage() {
           <div className="space-y-8">
             <div className="badge badge-primary badge-lg">
               <ZapIcon className="size-4" />
-              Real-time Collaboration
+              Seamless Interview prep
             </div>
 
             <h1 className="text-5xl lg:text-7xl font-black leading-tight">
