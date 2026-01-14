@@ -1,20 +1,31 @@
 ## 🏠 Home Page
 
-<img width="1752" height="940" alt="Home Page" src="https://github.com/user-attachments/assets/3edecece-ce28-4e53-9367-0d20f6ef2f98" />
+<img width="1904" height="934" alt="image" src="https://github.com/user-attachments/assets/c9c7e652-fb70-4ce7-a826-866b66dd0db8" />
+
 
 <br />
 <br />
+
+## 📊 Sign up
+
+<img width="1836" height="906" alt="image" src="https://github.com/user-attachments/assets/c61289e1-302d-4a77-a83a-a7de63b32fdd" />
+
+<br />
+<br />
+
 
 ## 📊 Dashboard
 
-<img width="1920" height="1080" alt="Dashboard" src="https://github.com/user-attachments/assets/5efa3ef6-4585-4e49-8fd1-0e9cb5867c48" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/daa5b0de-fb22-4a50-9b44-20627ea56911" />
+
 
 <br />
 <br />
 
 ## 🎥 Session Page
 
-<img width="1920" height="1080" alt="Session Page" src="https://github.com/user-attachments/assets/4764b48e-e109-4766-951b-00e86f61ed58" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/18e356d2-49dc-42ab-88c0-b70852f255ca" />
+
 
 <br />
 <br />
@@ -22,7 +33,8 @@
 
 ## 🧩 Problem Page
 
-<img width="1920" height="1080" alt="Problem Page" src="https://github.com/user-attachments/assets/cbd135b5-3060-48ea-8bea-a843a2874891" />
+<img width="1826" height="931" alt="image" src="https://github.com/user-attachments/assets/ced5174b-d742-47e0-b45c-b75a83bd32c4" />
+
 
 <br />
 <br />
@@ -30,7 +42,8 @@
 
 ## 🏆 Contest Page
 
-<img width="1920" height="1080" alt="Contest Page" src="https://github.com/user-attachments/assets/2fb8fd91-c446-44eb-b4cc-851a6eadadd2" />
+<img width="1822" height="928" alt="image" src="https://github.com/user-attachments/assets/a0b89bf3-e626-4343-9c08-2f1194871605" />
+
 
 <br />
 <br />
@@ -38,7 +51,8 @@
 
 ## 📚 Resource Page
 
-<img width="1920" height="1080" alt="Resource Page" src="https://github.com/user-attachments/assets/fe2c53a2-32b2-4a03-b819-9036c18c83df" />
+<img width="1826" height="936" alt="image" src="https://github.com/user-attachments/assets/7b8ed631-184c-4998-9c86-a878b0587eba" />
+
 
 <br /><br /><br /><br />
 <!-- START -->
