@@ -21,7 +21,7 @@ function Navbar() {
         >
           <div className="size-10 rounded-xl bg-gradient-to-r from-primary via-secondary to-accent flex items-center justify-center shadow-lg">
             <img
-              src="/logo.png"   // place logo in /public
+              src="/logo.png"
               alt="Logo"
               className="size-6 object-contain"
             />
