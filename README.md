@@ -44,43 +44,52 @@
 <!-- START -->
 ✨ Key Features:--
 
-🧑‍💻 Interview-grade code editor inspired by VS Code
+🧩 Standalone practice section for individual coding prep
 
-🔐 Secure authentication & session management via Clerk
+🧑‍💻 Interview-style code editor inspired by VS Code
 
-🎥 Live 1-on-1 video interview rooms
+🎥 Dedicated one-on-one live interview rooms
 
-📊 Real-time dashboard with performance insights
+💬 Instant messaging with real-time collaborative coding
 
-🎙️ Mic/cam controls, screen sharing & interview recording
+🔐 Robust user authentication and session security using Clerk
 
-💬 Live chat with synced collaborative coding
+🔑 Interview rooms secured with session passwords
 
-🛠️ Admin panel with role-based access & question management
+🔒 Controlled room access limited to two participants
 
-⚙️ Safe, sandboxed code execution
+⚙️ Safe and isolated environment for executing code
 
-🎯 Automated result evaluation using test cases
+🎯 Automatic result validation through test case checks
 
-🎉 Success celebrations & instant failure alerts
+🎉 Visual success effects and immediate failure notifications
 
-🧩 Dedicated practice arena for solo preparation
+🛠️ Admin control panel for creating and managing questions
 
-🔒 Locked rooms with a strict two-user limit
+🗓️ Contest hub displaying upcoming coding competitions
 
-🔑 Password-protected interview sessions
+📚 Resource library featuring trending tech content and articles
 
-🧠 Async background processing powered by Inngest
+🤖 AI-powered coding chat-bot integrated via ChatGPT & n8n
+
+🧠 Background task handling with asynchronous workflows (Inngest)
+
+⚡ High-performance data fetching and caching using TanStack Query
 
 🔗 Scalable REST APIs built with Node.js & Express
 
-⚡ Fast data handling with TanStack Query caching
-
-🤖 Smart PR reviews using CodeRabbit
+🤖 AI-assisted pull request reviews with CodeRabbit
 
 🧑‍💻 Professional Git & GitHub workflow support
 
-🚀 Seamless deployment on Render (free-tier optimized)
+🚀 Production-ready deployment on Render with free-tier support
+
+
+🚧 Upcoming Features:
+
+🤖 AI-driven mock interviews with real-time performance analysis and instant, actionable feedback
+
+
 
 
 <!-- END -->
