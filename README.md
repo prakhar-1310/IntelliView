@@ -42,44 +42,44 @@
 
 <br /><br /><br /><br />
 <!-- START -->
-✨ Highlights:
+✨ Key Features:--
+🧑‍💻 Interview-grade code editor inspired by VS Code
 
-🧑‍💻 VSCode-Powered Code Editor for a real interview-like experience
+🔐 Secure authentication & session management via Clerk
 
-🔐 Authentication via Clerk with secure session handling
+🎥 Live 1-on-1 video interview rooms
 
-🎥 1-on-1 Video Interview Rooms for live technical interviews
+📊 Real-time dashboard with performance insights
 
-🧭 Dashboard with Live Stats to track activity and progress
+🎙️ Mic/cam controls, screen sharing & interview recording
 
-🔊 Mic & Camera Toggle, Screen Sharing, and Session Recording
+💬 Live chat with synced collaborative coding
 
-💬 Bi-directional real-time chat and collaborative code synchronization between interviewer and candidate
+🛠️ Admin panel with role-based access & question management
 
-🧩 Role-based Admin Panel with full CRUD functionality for question management
+⚙️ Safe, sandboxed code execution
 
-⚙️ Secure Code Execution in an isolated sandboxed environment
+🎯 Automated result evaluation using test cases
 
-🎯 Auto Feedback System — pass/fail based on test case evaluation
+🎉 Success celebrations & instant failure alerts
 
-🎉 Confetti on Success and Notifications on Failure
+🧩 Dedicated practice arena for solo preparation
 
-🧩 Practice Problems Page for solo coding and preparation
+🔒 Locked rooms with a strict two-user limit
 
-🔒 Room Locking — strictly allows only 2 participants per room
+🔑 Password-protected interview sessions
 
-🔑 Each interview session is password protected
+🧠 Async background processing powered by Inngest
 
-🧠 Background Jobs with Inngest for async task processing
+🔗 Scalable REST APIs built with Node.js & Express
 
-🧰 RESTful APIs built using Node.js & Express
+⚡ Fast data handling with TanStack Query caching
 
-⚡ Efficient Data Fetching & Caching via TanStack Query
+🤖 Smart PR reviews using CodeRabbit
 
-🤖 CodeRabbit Integration for PR analysis and code optimization
+🧑‍💻 Professional Git & GitHub workflow support
 
-🧑‍💻 Git & GitHub Workflow (branches, pull requests, reviews, merges)
+🚀 Seamless deployment on Render (free-tier optimized)
 
-🚀 Deployment on Render (free-tier friendly)
 
 <!-- END -->
