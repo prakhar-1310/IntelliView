@@ -1,4 +1,6 @@
 import express from "express";
+import dotenv from "dotenv";
+dotenv.config();
 import path from "path";
 import cors from "cors";
 import { clerkMiddleware } from '@clerk/express'
@@ -10,6 +12,7 @@ import {ENV} from "./lib/env.js";
 import chatRoutes from "./routes/chatRoutes.js"
 import sessionRoutes from "./routes/sessionRoutes.js";
 import problemRoutes from "./routes/problemRoutes.js";
+import youtubeRoutes from "./routes/youtubeRoutes.js";
 
 
 const app = express();
@@ -25,6 +28,7 @@ app.use(clerkMiddleware()); // this will adds auth field to request object: req.
 app.use("/api/chat", chatRoutes); // For any request starting with /api/chat, hand it over to chatRoutes.
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/problems", problemRoutes);
+app.use("/api/youtube", youtubeRoutes);
 
 app.get("/msg", (req,res)=>{
     res.status(200).json({

@@ -1,5 +1,34 @@
 import { getDifficultyBadgeClass } from "../lib/utils";
+import { useState, useRef } from "react";
+import Popover from "./Popover";
+import { fetchYoutubeVideo } from "../api/youtube";
 function ProblemDescription({ problem, currentProblemId, onProblemChange, allProblems, isAccepted }) {
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const videoBtnRef = useRef();
+
+  const handleVideoClick = async (e) => {
+    e.preventDefault();
+    if (popoverOpen) {
+      setPopoverOpen(false);
+      return;
+    }
+    setPopoverOpen(true);
+    setLoading(true);
+    setError("");
+    setVideoUrl("");
+    try {
+      const url = await fetchYoutubeVideo(problem.title + " programming tutorial");
+      if (url) setVideoUrl(url);
+      else setError("No video found.");
+    } catch (err) {
+      setError("Failed to fetch video.");
+    }
+    setLoading(false);
+  };
   return (
     <div className="h-full overflow-y-auto bg-base-200">
       {/* HEADER SECTION */}
@@ -15,9 +44,52 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
                 ✓ Accepted
               </span>
             )}
-            <span className={`badge ${getDifficultyBadgeClass(problem.difficulty)}`}>
-              {problem.difficulty}
-            </span>
+            <span className={`badge ${getDifficultyBadgeClass(problem.difficulty)}`}>{problem.difficulty}</span>
+            <a
+              href={`https://www.youtube.com/results?search_query=${encodeURIComponent(problem.title + ' programming tutorial')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Search YouTube for help"
+              className="ml-2 flex items-center"
+            >
+              <button
+                ref={videoBtnRef}
+                className="badge badge-success badge-lg flex items-center justify-center p-0 w-8 h-8 min-w-0 min-h-0"
+                style={{ borderRadius: '9999px' }}
+                onClick={handleVideoClick}
+                title="Show YouTube help video"
+              >
+                <img
+                  src="/play-circle.svg"
+                  alt="YouTube Video"
+                  className="w-6 h-6"
+                  style={{ filter: 'none' }}
+                />
+              </button>
+                  <Popover open={popoverOpen} anchorRef={videoBtnRef} onClose={() => setPopoverOpen(false)}>
+                    <div className="flex flex-col items-center gap-2">
+                      <h3 className="text-base font-bold">YouTube Video</h3>
+                      {loading && <span className="loading loading-spinner loading-md"></span>}
+                      {error && <span className="text-error">{error}</span>}
+                      {videoUrl && (
+                        <>
+                          <div className="aspect-video w-full">
+                            <iframe
+                              width="100%"
+                              height="180"
+                              src={videoUrl.replace("watch?v=", "embed/")}
+                              title="YouTube video player"
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            ></iframe>
+                          </div>
+                          <a href={videoUrl} target="_blank" rel="noopener noreferrer" className="link link-primary mt-1">Watch on YouTube</a>
+                        </>
+                      )}
+                    </div>
+                  </Popover>
+            </a>
           </div>
         </div>
         <p className="text-base-content/60">{problem.category}</p>
@@ -50,6 +122,7 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
                 {note}
               </p>
             ))}
+            {/* Video icon removed from here, now in header */}
           </div>
         </div>
 
