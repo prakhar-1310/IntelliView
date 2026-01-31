@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router";
 import { PROBLEMS } from "../data/problems";
 import Navbar from "../components/Navbar";
@@ -7,6 +7,8 @@ import { problemApi } from "../api/problems";
 
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import ProblemDescription from "../components/ProblemDescription";
+import Popover from "../components/Popover";
+import { getHintFromGrok } from "../lib/grok";
 import OutputPanel from "../components/OutputPanel";
 import CodeEditorPanel from "../components/CodeEditorPanel";
 import { executeCode } from "../lib/piston";
@@ -17,6 +19,35 @@ import confetti from "canvas-confetti";
 function ProblemPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  // Hint state (must be inside component)
+  const [hintPopoverOpen, setHintPopoverOpen] = useState(false);
+  const [hintLoading, setHintLoading] = useState(false);
+  const [hint, setHint] = useState("");
+  const [hintError, setHintError] = useState("");
+  const hintBtnRef = useRef();
+
+  // Handle hint button click
+  const handleHintClick = async (e) => {
+    e.preventDefault();
+    if (hintPopoverOpen) {
+      setHintPopoverOpen(false);
+      return;
+    }
+    setHintPopoverOpen(true);
+    setHintLoading(true);
+    setHintError("");
+    setHint("");
+    try {
+      const desc = currentProblem?.description?.text || "";
+      if (!desc) throw new Error("No description available");
+      const result = await getHintFromGrok(desc);
+      setHint(result);
+    } catch (err) {
+      setHintError("Failed to fetch hint.");
+    }
+    setHintLoading(false);
+  };
 
   const [currentProblem, setCurrentProblem] = useState(null);
   const [allProblems, setAllProblems] = useState([]);
@@ -153,13 +184,16 @@ function ProblemPage() {
         <PanelGroup direction="horizontal">
           {/* left panel- problem desc */}
           <Panel defaultSize={40} minSize={30}>
-            <ProblemDescription
-              problem={currentProblem}
-              currentProblemId={currentProblem?.id}
-              onProblemChange={handleProblemChange}
-              allProblems={allProblems}
-              isAccepted={isAccepted}
-            />
+            <div className="relative">
+              {/* Removed upper hint button, only header hint remains */}
+              <ProblemDescription
+                problem={currentProblem}
+                currentProblemId={currentProblem?.id}
+                onProblemChange={handleProblemChange}
+                allProblems={allProblems}
+                isAccepted={isAccepted}
+              />
+            </div>
           </Panel>
 
           <PanelResizeHandle className="w-2 bg-base-300 hover:bg-primary transition-colors cursor-col-resize" />
