@@ -13,6 +13,7 @@ import chatRoutes from "./routes/chatRoutes.js"
 import sessionRoutes from "./routes/sessionRoutes.js";
 import problemRoutes from "./routes/problemRoutes.js";
 import youtubeRoutes from "./routes/youtubeRoutes.js";
+import grokRoutes from "../routes/grok.js";
 
 
 const app = express();
@@ -29,6 +30,7 @@ app.use("/api/chat", chatRoutes); // For any request starting with /api/chat, ha
 app.use("/api/sessions", sessionRoutes);
 app.use("/api/problems", problemRoutes);
 app.use("/api/youtube", youtubeRoutes);
+app.use("/api/grok", grokRoutes);
 
 app.get("/msg", (req,res)=>{
     res.status(200).json({

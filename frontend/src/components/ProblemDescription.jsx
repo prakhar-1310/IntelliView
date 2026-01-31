@@ -1,14 +1,23 @@
 import { getDifficultyBadgeClass } from "../lib/utils";
 import { useState, useRef } from "react";
+import { getHintFromGrok } from "../lib/grok";
 import Popover from "./Popover";
 import { fetchYoutubeVideo } from "../api/youtube";
 function ProblemDescription({ problem, currentProblemId, onProblemChange, allProblems, isAccepted }) {
+  // Video popover
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
   const videoBtnRef = useRef();
+
+  // Hint popover
+  const [hintPopoverOpen, setHintPopoverOpen] = useState(false);
+  const [hintLoading, setHintLoading] = useState(false);
+  const [hints, setHints] = useState([]);
+  const [hintError, setHintError] = useState("");
+  const [openHint, setOpenHint] = useState(null);
+  const hintBtnRef = useRef();
 
   const handleVideoClick = async (e) => {
     e.preventDefault();
@@ -28,6 +37,36 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
       setError("Failed to fetch video.");
     }
     setLoading(false);
+  };
+
+  const handleHintClick = async (e) => {
+    e.preventDefault();
+    if (hintPopoverOpen) {
+      setHintPopoverOpen(false);
+      return;
+    }
+    setHintPopoverOpen(true);
+    setHintLoading(true);
+    setHintError("");
+    setHints([]);
+    setOpenHint(null);
+    try {
+      const desc = problem?.description?.text || "";
+      if (!desc) throw new Error("No description available");
+      const result = await getHintFromGrok(desc);
+      if (Array.isArray(result)) {
+        setHints(result);
+      } else if (result && result.hints) {
+        setHints(result.hints);
+      } else if (typeof result === 'string') {
+        setHints([result]);
+      } else {
+        setHints(["No hint available."]);
+      }
+    } catch (err) {
+      setHintError("Failed to fetch hint.");
+    }
+    setHintLoading(false);
   };
   return (
     <div className="h-full overflow-y-auto bg-base-200">
@@ -66,30 +105,68 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
                   style={{ filter: 'none' }}
                 />
               </button>
-                  <Popover open={popoverOpen} anchorRef={videoBtnRef} onClose={() => setPopoverOpen(false)}>
-                    <div className="flex flex-col items-center gap-2">
-                      <h3 className="text-base font-bold">YouTube Video</h3>
-                      {loading && <span className="loading loading-spinner loading-md"></span>}
-                      {error && <span className="text-error">{error}</span>}
-                      {videoUrl && (
-                        <>
-                          <div className="aspect-video w-full">
-                            <iframe
-                              width="100%"
-                              height="180"
-                              src={videoUrl.replace("watch?v=", "embed/")}
-                              title="YouTube video player"
-                              frameBorder="0"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                            ></iframe>
-                          </div>
-                          <a href={videoUrl} target="_blank" rel="noopener noreferrer" className="link link-primary mt-1">Watch on YouTube</a>
-                        </>
-                      )}
-                    </div>
-                  </Popover>
+              <Popover open={popoverOpen} anchorRef={videoBtnRef} onClose={() => setPopoverOpen(false)}>
+                <div className="flex flex-col items-center gap-2">
+                  <h3 className="text-base font-bold">YouTube Video</h3>
+                  {loading && <span className="loading loading-spinner loading-md"></span>}
+                  {error && <span className="text-error">{error}</span>}
+                  {videoUrl && (
+                    <>
+                      <div className="aspect-video w-full">
+                        <iframe
+                          width="100%"
+                          height="180"
+                          src={videoUrl.replace("watch?v=", "embed/")}
+                          title="YouTube video player"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                      <a href={videoUrl} target="_blank" rel="noopener noreferrer" className="link link-primary mt-1">Watch on YouTube</a>
+                    </>
+                  )}
+                </div>
+              </Popover>
             </a>
+            {/* Hint button right of video button */}
+            <button
+              ref={hintBtnRef}
+              className="badge badge-info badge-lg flex items-center justify-center p-0 w-8 h-8 min-w-0 min-h-0 ml-2"
+              style={{ borderRadius: '9999px' }}
+              onClick={handleHintClick}
+              title="Show a hint for this problem"
+            >
+              <span role="img" aria-label="Hint">💡</span>
+            </button>
+            <Popover open={hintPopoverOpen} anchorRef={hintBtnRef} onClose={() => setHintPopoverOpen(false)}>
+              <div className="flex flex-col gap-2 w-full min-w-[300px]">
+                <h3 className="text-base font-bold">Hints</h3>
+                {hintLoading && <span className="loading loading-spinner loading-md"></span>}
+                {hintError && <span className="text-error">{hintError}</span>}
+                {!hintLoading && !hintError && hints.length > 0 && (
+                  <div className="flex flex-col w-full">
+                    {hints.map((hint, idx) => (
+                      <div key={idx} className="border-b border-base-300 last:border-b-0">
+                        <button
+                          className="flex items-center w-full px-2 py-3 text-left gap-2 hover:bg-base-200 focus:bg-base-200"
+                          onClick={() => setOpenHint(openHint === idx ? null : idx)}
+                        >
+                          <span role="img" aria-label="Hint">💡</span>
+                          <span className="font-medium">Hint {idx + 1}</span>
+                          <span className="ml-auto text-lg">{openHint === idx ? '▾' : '▸'}</span>
+                        </button>
+                        {openHint === idx && (
+                          <div className="px-6 pb-3 text-base-content/90 whitespace-pre-line">
+                            {hint}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Popover>
           </div>
         </div>
         <p className="text-base-content/60">{problem.category}</p>
