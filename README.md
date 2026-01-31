@@ -160,7 +160,7 @@ Feel free to open issues or submit pull requests.
 
 ## 📄 License
 This project is licensed under a **custom license**.  
-See the [LICENSE](./LICENSE) file for details.
+See the [LICENSE](./License) file for details.
 
 ---
 
