@@ -36,12 +36,12 @@
 
 ---
 
-## 🧩 Problem Page With Youtube Video Solution
+## 🧩 Coding Practice Page With YouTube Video Solution
 ![Dashboard](https://github.com/user-attachments/assets/6fcb828e-69fc-49af-a172-be290086874e)
 
 -------------
 
-## 🧩 Problem Page With Hints by AI
+## 🧩 Coding Practice Page With AI-Powered Hints
 ![Dashboard](https://github.com/user-attachments/assets/585af2dd-57d1-44f6-9044-c352663da75c)
 
 ### 🧩 Enhanced Problem Solving Experience
