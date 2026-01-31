@@ -36,6 +36,16 @@
 
 ---
 
+## 🧩 Problem Page With Youtube Video Solution
+![Dashboard](https://github.com/user-attachments/assets/6fcb828e-69fc-49af-a172-be290086874e)
+
+-------------
+
+## 🧩 Problem Page With Hints by AI
+![Dashboard](https://github.com/user-attachments/assets/585af2dd-57d1-44f6-9044-c352663da75c)
+
+---
+
 ## 🏆 Contest Page
 ![Contest Page](https://github.com/user-attachments/assets/a0b89bf3-e626-4343-9c08-2f1194871605)
 
