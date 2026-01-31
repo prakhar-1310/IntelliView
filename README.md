@@ -44,6 +44,12 @@
 ## 🧩 Problem Page With Hints by AI
 ![Dashboard](https://github.com/user-attachments/assets/585af2dd-57d1-44f6-9044-c352663da75c)
 
+### 🧩 Enhanced Problem Solving Experience
+- 🎥 Watch curated YouTube video solutions directly inside the problem page
+- 💡 Get progressive AI-generated hints instead of full solutions
+- 🚀 Learn efficiently without breaking interview discipline
+
+
 ---
 
 ## 🏆 Contest Page
@@ -64,6 +70,8 @@
 - 🎯 Automatic solution validation using test cases
 - 🎉 Visual success animations & instant failure feedback
 - ⚙️ Secure, isolated code execution environment
+- 🎥 YouTube video solutions embedded per problem
+- 💡 AI-generated step-by-step hints powered by Grok API
 
 ### 🎥 Real-Time Interview System
 - 🎥 One-on-one **live interview rooms**
@@ -83,6 +91,7 @@
 
 ### 🤖 AI & Automation
 - 🤖 AI-powered coding chatbot (ChatGPT + n8n)
+- 💡 AI-based hint generation using Grok API (OpenAI ecosystem)
 - 🧠 Background task handling using **Inngest**
 - 🤖 AI-assisted pull request reviews via **CodeRabbit**
 
@@ -93,12 +102,20 @@
 
 ---
 
+## 🌟 Highlights
+- AI-powered hints that guide, not spoil
+- Embedded video solutions for post-practice learning
+- Real-time collaborative interviews
+- Contest-ready coding environment
+
+
 ## 🛠️ Tech Stack
 
 ### Frontend
 - React
 - Tailwind CSS
 - TanStack Query
+- YouTube IFrame API (video solution playback)
 
 ### Backend
 - Node.js
@@ -108,6 +125,7 @@
 - Clerk
 
 ### AI & Automation
+- Grok API (AI-powered hints & guidance)
 - ChatGPT
 - n8n
 - Inngest
@@ -141,7 +159,8 @@ Feel free to open issues or submit pull requests.
 ---
 
 ## 📄 License
-This project is licensed under the **MIT License**.
+This project is licensed under a **custom license**.  
+See the [LICENSE](./LICENSE) file for details.
 
 ---
 
