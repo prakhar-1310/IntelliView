@@ -34,20 +34,24 @@
 ## 🧩 Coding Problem Page
 ![Problem Page](https://github.com/user-attachments/assets/ced5174b-d742-47e0-b45c-b75a83bd32c4)
 
----
 
 ## 🧩 Coding Practice Page With YouTube Video Solution
 ![Dashboard](https://github.com/user-attachments/assets/6fcb828e-69fc-49af-a172-be290086874e)
 
--------------
 
 ## 🧩 Coding Practice Page With AI-Powered Hints
 ![Dashboard](https://github.com/user-attachments/assets/585af2dd-57d1-44f6-9044-c352663da75c)
+
+
+## 🧩 Coding Practice Page With AI-Powered Debug
+![Dashboard](https://github.com/user-attachments/assets/6afed974-90d2-42be-85fa-43a7c4bdf987)
+
 
 ### 🧩 Enhanced Problem Solving Experience
 - 🎥 Watch curated YouTube video solutions directly inside the problem page
 - 💡 Get progressive AI-generated hints instead of full solutions
 - 🚀 Learn efficiently without breaking interview discipline
+- 💡 Explains why the bug happened
 
 
 ---
