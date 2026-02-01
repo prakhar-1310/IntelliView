@@ -9,6 +9,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import ProblemDescription from "../components/ProblemDescription";
 import Popover from "../components/Popover";
 import { getHintFromGrok } from "../lib/grok";
+import { getMistakesAndCorrectionFromGrok } from "../lib/grok";
 import OutputPanel from "../components/OutputPanel";
 import CodeEditorPanel from "../components/CodeEditorPanel";
 import { executeCode } from "../lib/piston";
@@ -17,6 +18,28 @@ import toast from "react-hot-toast";
 import confetti from "canvas-confetti";
 
 function ProblemPage() {
+  // Debug popover state
+  const [debugPopoverOpen, setDebugPopoverOpen] = useState(false);
+  const [debugPopoverContent, setDebugPopoverContent] = useState("");
+  const debugBtnRef = useRef();
+
+  // Debug handler
+  const handleDebugCode = async (e) => {
+    if (debugPopoverOpen) {
+      setDebugPopoverOpen(false);
+      return;
+    }
+    setIsRunning(true);
+    setDebugPopoverOpen(true);
+    setDebugPopoverContent("Analyzing code...");
+    try {
+      const result = await getMistakesAndCorrectionFromGrok(code, selectedLanguage);
+      setDebugPopoverContent(Array.isArray(result) ? result.join("\n\n") : result);
+    } catch (err) {
+      setDebugPopoverContent("Failed to get debug analysis.");
+    }
+    setIsRunning(false);
+  };
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -210,7 +233,16 @@ function ProblemPage() {
                   onLanguageChange={handleLanguageChange}
                   onCodeChange={setCode}
                   onRunCode={handleRunCode}
+                  onDebugCode={handleDebugCode}
+                  debugBtnRef={debugBtnRef}
                 />
+                <Popover
+                  open={debugPopoverOpen}
+                  anchorRef={debugBtnRef}
+                  onClose={() => setDebugPopoverOpen(false)}
+                >
+                  <pre className="whitespace-pre-wrap text-xs">{debugPopoverContent}</pre>
+                </Popover>
               </Panel>
 
               <PanelResizeHandle className="h-2 bg-base-300 hover:bg-primary transition-colors cursor-row-resize" />
