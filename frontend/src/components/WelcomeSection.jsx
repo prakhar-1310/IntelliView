@@ -6,53 +6,53 @@ function WelcomeSection({ onCreateSession, hasActiveSession }) {
   const { user } = useUser();
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden border-b border-black/5">
       <div className="relative max-w-7xl mx-auto px-6 py-16">
         <div className="flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="size-12 bg-[#451a21] rounded-full flex items-center justify-center border border-white/20 overflow-hidden">
                 <img
-                  src="/logo.png"   // put logo inside /public
+                  src="/logo.png"
                   alt="Logo"
-                  className="w-6 h-6 object-contain"
+                  className="size-7 object-contain"
                 />
               </div>
 
-              <h1 className="text-5xl font-black bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                Welcome back, {user?.firstName || "there"}!
+              <h1 className="text-5xl font-serif font-light text-[#451a21] tracking-tight">
+                Welcome back, <span className="font-medium">{user?.firstName || "there"}</span>!
               </h1>
             </div>
-            <p className="text-xl text-base-content/60 ml-16">
-              Ready to level up your coding skills?
+            <p className="text-lg text-black/60 ml-16 font-light">
+              Ready to elevate your technical mastery?
             </p>
           </div>
           <div className="text-right">
             <div className="flex gap-3">
               <button
                 onClick={() => {}}
-                className="group px-8 py-4 rounded-2xl transition-all duration-200 bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                className="group px-8 py-4 bg-[#d4af37] text-white font-bold text-[10px] tracking-wider uppercase hover:bg-[#451a21] transition-all duration-300 shadow-lg"
               >
-                <div className="flex items-center gap-3 font-bold text-lg">
-                  <SparklesIcon className="w-6 h-6" />
+                <div className="flex items-center gap-3">
+                  <SparklesIcon className="size-5" />
                   <span>Mock Interview</span>
-                  <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRightIcon className="size-4 group-hover:translate-x-1 transition-transform" />
                 </div>
               </button>
               <button
                 onClick={onCreateSession}
                 disabled={hasActiveSession}
-                className={`group px-8 py-4 rounded-2xl transition-all duration-200 ${
+                className={`group px-8 py-4 font-bold text-[10px] tracking-wider uppercase transition-all duration-300 shadow-lg ${
                   hasActiveSession 
-                    ? 'bg-base-300 text-base-content/50 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-primary to-secondary hover:opacity-90'
+                    ? 'bg-black/10 text-black/40 cursor-not-allowed'
+                    : 'bg-[#451a21] text-white hover:bg-[#d4af37]'
                 }`}
               >
-                <div className="flex items-center gap-3 font-bold text-lg">
-                  <ZapIcon className="w-6 h-6" />
+                <div className="flex items-center gap-3">
+                  <ZapIcon className="size-5" />
                   <span>{hasActiveSession ? 'Session Active' : 'Create Session'}</span>
                   {!hasActiveSession && (
-                    <ArrowRightIcon className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRightIcon className="size-4 group-hover:translate-x-1 transition-transform" />
                   )}
                 </div>
               </button>

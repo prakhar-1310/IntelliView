@@ -54,38 +54,36 @@ function ContestsPage() {
   };
 
   const ContestCard = ({ contest }) => (
-    <div className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow border border-base-300">
-      <div className="card-body">
-        <h2 className="card-title text-lg mb-2">{contest.name}</h2>
-        <div className="space-y-2 text-sm text-base-content/70">
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="size-4" />
-            <span>{formatDate(contest.startTime)}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <TrophyIcon className="size-4" />
-            <span>Duration: {Math.round(contest.durationMinutes)} minutes</span>
-          </div>
+    <div className="bg-white border border-black/10 hover:border-[#451a21]/30 transition-all shadow-sm hover:shadow-md p-6">
+      <h2 className="text-lg font-serif font-medium text-[#451a21] mb-4">{contest.name}</h2>
+      <div className="space-y-2 text-sm text-black/60">
+        <div className="flex items-center gap-2">
+          <CalendarIcon className="size-4 text-[#d4af37]" />
+          <span>{formatDate(contest.startTime)}</span>
         </div>
-        <div className="card-actions justify-end mt-4">
-          <a
-            href={contest.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-primary btn-sm gap-2"
-          >
-            View Contest
-            <ExternalLinkIcon className="size-4" />
-          </a>
+        <div className="flex items-center gap-2">
+          <TrophyIcon className="size-4 text-[#d4af37]" />
+          <span>Duration: {Math.round(contest.durationMinutes)} minutes</span>
         </div>
+      </div>
+      <div className="mt-6 flex justify-end">
+        <a
+          href={contest.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-6 py-2 bg-[#451a21] hover:bg-[#d4af37] text-white text-[10px] font-bold tracking-wider uppercase transition-all flex items-center gap-2"
+        >
+          View Contest
+          <ExternalLinkIcon className="size-4" />
+        </a>
       </div>
     </div>
   );
 
   const ContestSection = ({ title, contests, bgColor }) => (
     <div className="mb-12">
-      <h2 className={`text-2xl font-bold mb-6 flex items-center gap-3 ${bgColor}`}>
-        <div className="h-1 w-8 rounded-full bg-gradient-to-r from-primary to-secondary"></div>
+      <h2 className="text-3xl font-serif font-light text-[#451a21] mb-8 flex items-center gap-4">
+        <div className="h-[2px] w-12 bg-[#d4af37]"></div>
         {title}
       </h2>
       {contests.length > 0 ? (
@@ -95,24 +93,22 @@ function ContestsPage() {
           ))}
         </div>
       ) : (
-        <div className="card bg-base-100 shadow-sm">
-          <div className="card-body text-center">
-            <p className="text-base-content/60">No upcoming contests available</p>
-          </div>
+        <div className="bg-white border border-black/5 shadow-sm p-8">
+          <p className="text-black/50 text-center font-light">No upcoming contests available</p>
         </div>
       )}
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-base-200">
+    <div className="min-h-screen bg-[#fdfcfb]">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-6 py-12">
         {/* HEADER */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-2">Upcoming Contests</h1>
-          <p className="text-base-content/70">
+        <div className="mb-12 border-b border-black/5 pb-8">
+          <h1 className="text-5xl font-serif font-light text-[#451a21] mb-3 tracking-tight">Upcoming Contests</h1>
+          <p className="text-lg text-black/60 font-light">
             Discover and participate in coding contests from top platforms
           </p>
         </div>
@@ -120,8 +116,8 @@ function ContestsPage() {
         {loading ? (
           <div className="flex items-center justify-center min-h-96">
             <div className="text-center">
-              <div className="loading loading-spinner loading-lg text-primary mb-4"></div>
-              <p className="text-base-content/70">Fetching upcoming contests...</p>
+              <div className="size-16 border-4 border-[#451a21]/20 border-t-[#451a21] rounded-full animate-spin mb-4"></div>
+              <p className="text-black/60 font-light">Fetching upcoming contests...</p>
             </div>
           </div>
         ) : codeforceContests.length > 0 ? (
@@ -131,12 +127,10 @@ function ContestsPage() {
             bgColor="text-blue-600"
           />
         ) : (
-          <div className="card bg-base-100 shadow-sm">
-            <div className="card-body text-center">
-              <p className="text-base-content/60">
-                Unable to fetch contests at this moment. Please try again later.
-              </p>
-            </div>
+          <div className="bg-white border border-black/5 shadow-sm p-8">
+            <p className="text-black/50 text-center font-light">
+              Unable to fetch contests at this moment. Please try again later.
+            </p>
           </div>
         )}
       </div>

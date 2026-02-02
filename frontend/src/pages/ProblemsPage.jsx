@@ -99,39 +99,38 @@ function ProblemsPage() {
   const filteredHardCount = filteredProblems.filter((p) => p.difficulty === "Hard").length;
 
   return (
-    <div className="min-h-screen bg-base-200">
+    <div className="min-h-screen bg-[#fdfcfb]">
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* HEADER */}
-        {/* HEADER */}
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex items-center justify-between border-b border-black/5 pb-8">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Practice Problems</h1>
-            <p className="text-base-content/70">
+            <h1 className="text-5xl font-serif font-light text-[#451a21] tracking-tight mb-2">Practice Problems</h1>
+            <p className="text-lg text-black/60 font-light">
               Sharpen your coding skills with these curated problems
             </p>
           </div>
 
           <Link
             to="/add-problem"
-            className={`btn btn-primary ${!isAdmin(user) ? 'hidden' : ''}`}
+            className={`px-6 py-2 bg-[#451a21] hover:bg-[#d4af37] text-white text-[10px] font-bold tracking-wider uppercase transition-all ${!isAdmin(user) ? 'hidden' : ''}`}
           >
             + Add Problem
           </Link>
         </div>
 
         {/* SEARCH AND FILTER SECTION */}
-        <div className="mb-8 space-y-4 bg-base-100 rounded-lg p-6 shadow-sm border border-base-300">
+        <div className="mb-8 space-y-4 bg-white rounded-lg p-6 shadow-sm border border-black/10">
           {/* Search Bar */}
           <div>
-            <label className="block text-sm font-semibold mb-2 text-base-content">
+            <label className="block text-[10px] font-bold tracking-wider uppercase mb-2 text-[#451a21]">
               Search Problems
             </label>
             <input
               type="text"
               placeholder="Search by title, category, or description..."
-              className="input input-bordered w-full"
+              className="w-full px-4 py-2 border border-black/10 rounded focus:outline-none focus:border-[#451a21] transition-all"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -139,31 +138,47 @@ function ProblemsPage() {
 
           {/* Difficulty Filter */}
           <div>
-            <label className="block text-sm font-semibold mb-2 text-base-content">
+            <label className="block text-[10px] font-bold tracking-wider uppercase mb-2 text-[#451a21]">
               Filter by Difficulty
             </label>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedDifficulty("all")}
-                className={`btn btn-sm ${selectedDifficulty === "all" ? "btn-primary" : "btn-outline"}`}
+                className={`px-4 py-2 text-[10px] font-bold tracking-wider uppercase transition-all rounded ${
+                  selectedDifficulty === "all" 
+                    ? "bg-[#451a21] text-white" 
+                    : "bg-white border border-black/20 text-black/70 hover:border-[#451a21]/30"
+                }`}
               >
                 All
               </button>
               <button
                 onClick={() => setSelectedDifficulty("Easy")}
-                className={`btn btn-sm ${selectedDifficulty === "Easy" ? "btn-success" : "btn-outline"}`}
+                className={`px-4 py-2 text-[10px] font-bold tracking-wider uppercase transition-all rounded ${
+                  selectedDifficulty === "Easy" 
+                    ? "bg-[#22c55e] text-white" 
+                    : "bg-white border border-black/20 text-black/70 hover:border-[#22c55e]/30"
+                }`}
               >
                 Easy
               </button>
               <button
                 onClick={() => setSelectedDifficulty("Medium")}
-                className={`btn btn-sm ${selectedDifficulty === "Medium" ? "btn-warning" : "btn-outline"}`}
+                className={`px-4 py-2 text-[10px] font-bold tracking-wider uppercase transition-all rounded ${
+                  selectedDifficulty === "Medium" 
+                    ? "bg-[#eab308] text-white" 
+                    : "bg-white border border-black/20 text-black/70 hover:border-[#eab308]/30"
+                }`}
               >
                 Medium
               </button>
               <button
                 onClick={() => setSelectedDifficulty("Hard")}
-                className={`btn btn-sm ${selectedDifficulty === "Hard" ? "btn-error" : "btn-outline"}`}
+                className={`px-4 py-2 text-[10px] font-bold tracking-wider uppercase transition-all rounded ${
+                  selectedDifficulty === "Hard" 
+                    ? "bg-[#ef4444] text-white" 
+                    : "bg-white border border-black/20 text-black/70 hover:border-[#ef4444]/30"
+                }`}
               >
                 Hard
               </button>
@@ -179,98 +194,96 @@ function ProblemsPage() {
             <Link
               key={problem.id}
               to={`/problem/${problem.id}`}
-              className="card bg-base-100 hover:scale-[1.01] transition-transform"
+              className="block bg-white hover:border-[#451a21]/30 transition-all shadow-sm hover:shadow-md border border-black/10 rounded-lg p-6"
             >
-              <div className="card-body">
-                <div className="flex items-center justify-between gap-4">
-                  {/* LEFT SIDE */}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-lg text-primary">
-                        #{problem.id}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h2 className="text-xl font-bold">{problem.title}</h2>
-                          <span className={`badge ${getDifficultyBadgeClass(problem.difficulty)}`}>
-                            {problem.difficulty}
-                          </span>
-                        </div>
-                        <p className="text-sm text-base-content/60"> {problem.category}</p>
-                      </div>
+              <div className="flex items-center justify-between gap-4">
+                {/* LEFT SIDE */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="size-12 rounded-lg bg-[#451a21]/10 flex items-center justify-center font-bold text-lg text-[#451a21]">
+                      #{problem.id}
                     </div>
-                    <p className="text-base-content/80 mb-3">{problem.description.text}</p>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h2 className="text-xl font-serif font-medium text-[#451a21]">{problem.title}</h2>
+                        <span className={`px-2 py-1 text-[9px] font-bold tracking-wider uppercase rounded ${
+                          problem.difficulty?.toLowerCase() === 'easy' ? 'bg-[#22c55e] text-white' :
+                          problem.difficulty?.toLowerCase() === 'medium' ? 'bg-[#eab308] text-white' :
+                          'bg-[#ef4444] text-white'
+                        }`}>
+                          {problem.difficulty}
+                        </span>
+                      </div>
+                      <p className="text-sm text-black/60 font-light">{problem.category}</p>
+                    </div>
                   </div>
-                  {/* RIGHT SIDE */}
-                  <div className="flex items-center gap-2">
-                    {isAdmin(user) && (
-                      <>
-                        <button 
-                          className="btn btn-sm btn-ghost"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleEdit(problem);
-                          }}
-                          disabled={!problem._id}
-                          title={!problem._id ? "Cannot edit static problems" : "Edit problem"}
-                        >
-                          <EditIcon className="size-4" />
-                        </button>
-                        <button 
-                          className="btn btn-sm btn-ghost text-error"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleDelete(problem);
-                          }}
-                          disabled={!problem._id || deleteMutation.isPending}
-                          title={!problem._id ? "Cannot delete static problems" : "Delete problem"}
-                        >
-                          <TrashIcon className="size-4" />
-                        </button>
-                      </>
-                    )}
-                    <div className="flex items-center gap-2 text-primary">
-                      <span className="font-medium">Solve</span>
-                      <ChevronRightIcon className="size-5" />
-                    </div>
+                  <p className="text-black/70 font-light mb-3">{problem.description.text}</p>
+                </div>
+                {/* RIGHT SIDE */}
+                <div className="flex items-center gap-2">
+                  {isAdmin(user) && (
+                    <>
+                      <button 
+                        className="p-2 hover:bg-black/5 rounded transition-all"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleEdit(problem);
+                        }}
+                        disabled={!problem._id}
+                        title={!problem._id ? "Cannot edit static problems" : "Edit problem"}
+                      >
+                        <EditIcon className="size-4 text-[#451a21]" />
+                      </button>
+                      <button 
+                        className="p-2 hover:bg-black/5 rounded transition-all"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDelete(problem);
+                        }}
+                        disabled={!problem._id || deleteMutation.isPending}
+                        title={!problem._id ? "Cannot delete static problems" : "Delete problem"}
+                      >
+                        <TrashIcon className="size-4 text-[#8b1e1e]" />
+                      </button>
+                    </>
+                  )}
+                  <div className="flex items-center gap-2 text-[#451a21]">
+                    <span className="font-medium text-sm">Solve</span>
+                    <ChevronRightIcon className="size-5" />
                   </div>
                 </div>
               </div>
             </Link>
             ))
           ) : (
-            <div className="card bg-base-100 shadow-sm">
-              <div className="card-body text-center">
-                <p className="text-base-content/60">
-                  No problems found matching your filters. Try adjusting your search or difficulty level.
-                </p>
-              </div>
+            <div className="bg-white shadow-sm border border-black/5 rounded-lg p-8 text-center">
+              <p className="text-black/50 font-light">
+                No problems found matching your filters. Try adjusting your search or difficulty level.
+              </p>
             </div>
           )}
         </div>
 
         {/* STATS FOOTER */}
-        <div className="mt-12 card bg-base-100 shadow-lg">
-          <div className="card-body">
-            <div className="stats stats-vertical lg:stats-horizontal">
-              <div className="stat">
-                <div className="stat-title">Showing Problems</div>
-                <div className="stat-value text-primary">{filteredProblems.length}</div>
-                <div className="stat-desc">out of {problems.length} total</div>
-              </div>
+        <div className="mt-12 bg-white shadow-sm border border-black/10 rounded-lg p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="text-center">
+              <div className="text-sm text-black/60 font-light uppercase tracking-wider mb-2">Showing Problems</div>
+              <div className="text-4xl font-serif font-light text-[#451a21] mb-1">{filteredProblems.length}</div>
+              <div className="text-xs text-black/50 font-light">out of {problems.length} total</div>
+            </div>
 
-              <div className="stat">
-                <div className="stat-title">Easy</div>
-                <div className="stat-value text-success">{filteredEasyCount}</div>
-              </div>
-              <div className="stat">
-                <div className="stat-title">Medium</div>
-                <div className="stat-value text-warning">{filteredMediumCount}</div>
-              </div>
-              <div className="stat">
-                <div className="stat-title">Hard</div>
-                <div className="stat-value text-error">{filteredHardCount}</div>
-              </div>
+            <div className="text-center">
+              <div className="text-sm text-black/60 font-light uppercase tracking-wider mb-2">Easy</div>
+              <div className="text-4xl font-serif font-light text-[#22c55e]">{filteredEasyCount}</div>
+            </div>
+            <div className="text-center">
+              <div className="text-sm text-black/60 font-light uppercase tracking-wider mb-2">Medium</div>
+              <div className="text-4xl font-serif font-light text-[#eab308]">{filteredMediumCount}</div>
+            </div>
+            <div className="text-center">
+              <div className="text-sm text-black/60 font-light uppercase tracking-wider mb-2">Hard</div>
+              <div className="text-4xl font-serif font-light text-[#ef4444]">{filteredHardCount}</div>
             </div>
           </div>
         </div>

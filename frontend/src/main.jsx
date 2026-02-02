@@ -20,7 +20,9 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-          <App />
+          <div data-theme="intelliview">
+            <App />
+          </div>
         </ClerkProvider>
       </QueryClientProvider>
     </BrowserRouter>
