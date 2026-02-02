@@ -4,30 +4,26 @@ function StatsCards({ activeSessionsCount, recentSessionsCount }) {
   return (
     <div className="lg:col-span-1 grid grid-cols-1 gap-6">
       {/* Active Count */}
-      <div className="card bg-base-100 border-2 border-primary/20 hover:border-primary/40">
-        <div className="card-body">
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-3 bg-primary/10 rounded-2xl">
-              <UsersIcon className="w-7 h-7 text-primary" />
-            </div>
-            <div className="badge badge-primary">Live</div>
+      <div className="bg-white border border-[#451a21]/10 hover:border-[#451a21]/30 transition-all shadow-sm hover:shadow-md p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="size-12 bg-[#451a21]/5 rounded-full flex items-center justify-center">
+            <UsersIcon className="size-6 text-[#451a21]" />
           </div>
-          <div className="text-4xl font-black mb-1">{activeSessionsCount}</div>
-          <div className="text-sm opacity-60">Active Sessions</div>
+          <div className="px-3 py-1 bg-[#d4af37] text-white text-[9px] font-bold tracking-wider uppercase rounded">Live</div>
         </div>
+        <div className="text-5xl font-serif font-light text-[#451a21] mb-1">{activeSessionsCount}</div>
+        <div className="text-sm text-black/50 font-light tracking-wide">Active Sessions</div>
       </div>
 
       {/* Recent Count */}
-      <div className="card bg-base-100 border-2 border-secondary/20 hover:border-secondary/40">
-        <div className="card-body">
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-3 bg-secondary/10 rounded-2xl">
-              <TrophyIcon className="w-7 h-7 text-secondary" />
-            </div>
+      <div className="bg-white border border-[#d4af37]/20 hover:border-[#d4af37]/40 transition-all shadow-sm hover:shadow-md p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="size-12 bg-[#d4af37]/10 rounded-full flex items-center justify-center">
+            <TrophyIcon className="size-6 text-[#d4af37]" />
           </div>
-          <div className="text-4xl font-black mb-1">{recentSessionsCount}</div>
-          <div className="text-sm opacity-60">Total Sessions</div>
         </div>
+        <div className="text-5xl font-serif font-light text-[#451a21] mb-1">{recentSessionsCount}</div>
+        <div className="text-sm text-black/50 font-light tracking-wide">Total Sessions</div>
       </div>
     </div>
   );

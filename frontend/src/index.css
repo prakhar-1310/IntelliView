@@ -1,6 +1,17 @@
 @import "tailwindcss";
-@plugin "daisyui"{
-    themes: all;
+
+@theme {
+  --color-primary: #451a21;
+  --color-secondary: #d4af37;
+  --color-accent: #8b5a3c;
+  --color-neutral: #2a2a2a;
+  --color-base-100: #fdfcfb;
+  --color-base-200: #f5f4f0;
+  --color-base-300: #e8e6e0;
+  --color-info: #6C5CE7;
+  --color-success: #00b894;
+  --color-warning: #fdcb6e;
+  --color-error: #d63031;
 }
 
 /* Add cursor pointer to buttons by default - this is coming from tailwind docs */
@@ -8,5 +19,34 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+
+  /* Apply luxury theme fonts and colors globally */
+  body {
+    @apply bg-base-100 text-neutral;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Georgia', 'Times New Roman', serif;
+  }
+}
+
+/* Custom scrollbar styling */
+@layer utilities {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-base-200;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/50;
   }
 }

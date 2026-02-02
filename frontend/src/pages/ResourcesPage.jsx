@@ -99,51 +99,51 @@ function ResourcesPage() {
       href={resource.link}
       target="_blank"
       rel="noopener noreferrer"
-      className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow border border-base-300 overflow-hidden"
+      className="block bg-white shadow-sm hover:shadow-md transition-all border border-black/10 hover:border-[#451a21]/30 overflow-hidden rounded-lg"
     >
       {resource.coverImage && (
-        <figure className="h-40 overflow-hidden bg-base-200">
+        <div className="h-40 overflow-hidden bg-black/5">
           <img
             src={resource.coverImage}
             alt={resource.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-all"
           />
-        </figure>
+        </div>
       )}
-      <div className="card-body">
-        <h2 className="card-title text-lg line-clamp-2">{resource.title}</h2>
+      <div className="p-6">
+        <h2 className="text-lg font-serif font-medium text-[#451a21] line-clamp-2 mb-3">{resource.title}</h2>
         
-        <p className="text-sm text-base-content/70 line-clamp-2">
+        <p className="text-sm text-black/60 font-light line-clamp-2 mb-4">
           {resource.description}
         </p>
 
-        <div className="space-y-2 text-xs text-base-content/60">
+        <div className="space-y-2 text-xs text-black/60 font-light mb-4">
           <div className="flex items-center gap-2">
-            <UserIcon className="size-3" />
+            <UserIcon className="size-3 text-[#451a21]" />
             <span>{resource.author}</span>
           </div>
           <div className="flex items-center gap-2">
-            <CalendarIcon className="size-3" />
+            <CalendarIcon className="size-3 text-[#451a21]" />
             <span>{formatDate(resource.publishDate)}</span>
           </div>
           <div className="flex items-center gap-2">
-            <BookOpenIcon className="size-3" />
+            <BookOpenIcon className="size-3 text-[#451a21]" />
             <span>{resource.readTime} min read</span>
           </div>
         </div>
 
         {resource.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-3">
+          <div className="flex flex-wrap gap-1 mt-3 mb-4">
             {resource.tags.slice(0, 3).map((tag) => (
-              <span key={tag} className="badge badge-sm badge-primary">
+              <span key={tag} className="px-2 py-1 bg-[#d4af37]/20 text-[#451a21] text-[9px] font-bold tracking-wider uppercase rounded">
                 {tag}
               </span>
             ))}
           </div>
         )}
 
-        <div className="card-actions justify-end mt-4">
-          <button className="btn btn-primary btn-sm gap-2">
+        <div className="flex justify-end mt-4">
+          <button className="px-4 py-2 bg-[#451a21] hover:bg-[#d4af37] text-white text-[10px] font-bold tracking-wider uppercase transition-all rounded flex items-center gap-2">
             Read More
             <ExternalLinkIcon className="size-4" />
           </button>
@@ -153,27 +153,27 @@ function ResourcesPage() {
   );
 
   return (
-    <div className="min-h-screen bg-base-200">
+    <div className="min-h-screen bg-[#fdfcfb]">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* HEADER */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-2">Coding Resources</h1>
-          <p className="text-base-content/70">
+        <div className="mb-12 border-b border-black/5 pb-8">
+          <h1 className="text-5xl font-serif font-light text-[#451a21] tracking-tight mb-2">Coding Resources</h1>
+          <p className="text-lg text-black/60 font-light">
             Discover free tutorials, articles, and learning materials to level up your coding skills
           </p>
         </div>
 
         {/* SEARCH SECTION */}
-        <div className="mb-8 bg-base-100 rounded-lg p-6 shadow-sm border border-base-300">
-          <label className="block text-sm font-semibold mb-2 text-base-content">
+        <div className="mb-8 bg-white rounded-lg p-6 shadow-sm border border-black/10">
+          <label className="block text-[10px] font-bold tracking-wider uppercase mb-2 text-[#451a21]">
             Search Resources
           </label>
           <input
             type="text"
             placeholder="Search by title, topic, or tag..."
-            className="input input-bordered w-full"
+            className="w-full px-4 py-2 border border-black/10 rounded focus:outline-none focus:border-[#451a21] transition-all"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -183,8 +183,8 @@ function ResourcesPage() {
         {loading ? (
           <div className="flex items-center justify-center min-h-96">
             <div className="text-center">
-              <div className="loading loading-spinner loading-lg text-primary mb-4"></div>
-              <p className="text-base-content/70">Fetching resources...</p>
+              <div className="size-16 border-4 border-[#451a21]/20 border-t-[#451a21] rounded-full animate-spin mb-4"></div>
+              <p className="text-black/60 font-light">Fetching resources...</p>
             </div>
           </div>
         ) : filteredResources.length > 0 ? (
@@ -201,7 +201,7 @@ function ResourcesPage() {
                 <button
                   onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="btn btn-sm"
+                  className="px-4 py-2 bg-white border border-black/20 hover:border-[#451a21]/30 text-[10px] font-bold tracking-wider uppercase transition-all rounded disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Previous
                 </button>
@@ -211,8 +211,10 @@ function ResourcesPage() {
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      className={`btn btn-sm ${
-                        currentPage === page ? "btn-primary" : "btn-ghost"
+                      className={`px-3 py-2 text-[10px] font-bold tracking-wider uppercase transition-all rounded ${
+                        currentPage === page 
+                          ? "bg-[#451a21] text-white" 
+                          : "bg-white border border-black/20 hover:border-[#451a21]/30 text-black/70"
                       }`}
                     >
                       {page}
@@ -223,7 +225,7 @@ function ResourcesPage() {
                 <button
                   onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
-                  className="btn btn-sm"
+                  className="px-4 py-2 bg-white border border-black/20 hover:border-[#451a21]/30 text-[10px] font-bold tracking-wider uppercase transition-all rounded disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Next
                 </button>
@@ -231,18 +233,16 @@ function ResourcesPage() {
             )}
           </>
         ) : (
-          <div className="card bg-base-100 shadow-sm">
-            <div className="card-body text-center">
-              <p className="text-base-content/60 mb-4">
-                No resources found. Try adjusting your search query.
-              </p>
-              <button
-                onClick={() => setSearchQuery("")}
-                className="btn btn-primary btn-sm"
-              >
-                Clear Search
-              </button>
-            </div>
+          <div className="bg-white shadow-sm border border-black/5 rounded-lg p-8 text-center">
+            <p className="text-black/50 font-light mb-4">
+              No resources found. Try adjusting your search query.
+            </p>
+            <button
+              onClick={() => setSearchQuery("")}
+              className="px-6 py-2 bg-[#451a21] hover:bg-[#d4af37] text-white text-[10px] font-bold tracking-wider uppercase transition-all rounded"
+            >
+              Clear Search
+            </button>
           </div>
         )}
       </div>
