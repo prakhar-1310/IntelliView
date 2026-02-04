@@ -13,6 +13,13 @@ import CodeFolioCard from "../components/CodeFolio/CodeFolioCard";
 import { getLeetCodeStats, getCodeForcesStats, fetchCodeFolioUsernames, saveCodeFolioUsernames } from "../api/codefolio";
 import toast from "react-hot-toast";
 
+const CACHE_KEYS = {
+  usernames: 'codefolio_usernames_cache',
+  profileData: 'codefolio_profiledata_cache',
+  platformStatus: 'codefolio_platformstatus_cache',
+  userId: 'codefolio_user_id_cache'
+};
+
 function CodeFolioPage() {
   const { user } = useUser();
   const [showSetupModal, setShowSetupModal] = useState(false);
@@ -20,15 +27,47 @@ function CodeFolioPage() {
   const [usernames, setUsernames] = useState(null);
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [platformStatus, setPlatformStatus] = useState({
+    leetcode: false,
+    codeforces: false,
+  });
 
   useEffect(() => {
     const loadUsernames = async () => {
       setLoading(true);
+      
+      // Check if cache exists and belongs to current user
+      const cachedUserId = sessionStorage.getItem(CACHE_KEYS.userId);
+      const cachedUsernames = sessionStorage.getItem(CACHE_KEYS.usernames);
+      const cachedProfileData = sessionStorage.getItem(CACHE_KEYS.profileData);
+      const cachedPlatformStatus = sessionStorage.getItem(CACHE_KEYS.platformStatus);
+      
+      // If user changed (logged out and logged back in), clear cache
+      if (cachedUserId && cachedUserId !== user?.id) {
+        sessionStorage.removeItem(CACHE_KEYS.usernames);
+        sessionStorage.removeItem(CACHE_KEYS.profileData);
+        sessionStorage.removeItem(CACHE_KEYS.platformStatus);
+        sessionStorage.removeItem(CACHE_KEYS.userId);
+      } else if (cachedUsernames && cachedProfileData && cachedUserId === user?.id) {
+        // Use cached data
+        const parsedUsernames = JSON.parse(cachedUsernames);
+        const parsedProfileData = JSON.parse(cachedProfileData);
+        const parsedPlatformStatus = cachedPlatformStatus ? JSON.parse(cachedPlatformStatus) : { leetcode: false, codeforces: false };
+        setUsernames(parsedUsernames);
+        setProfileData(parsedProfileData);
+        setPlatformStatus(parsedPlatformStatus);
+        setLoading(false);
+        return;
+      }
+      
       try {
         // Try to fetch from backend
         const response = await fetchCodeFolioUsernames();
         if (response && response.success && response.data) {
           setUsernames(response.data);
+          // Store usernames in cache
+          sessionStorage.setItem(CACHE_KEYS.usernames, JSON.stringify(response.data));
+          sessionStorage.setItem(CACHE_KEYS.userId, user?.id);
           fetchProfileData(response.data);
         } else {
           // Fallback to localStorage if backend empty
@@ -36,6 +75,8 @@ function CodeFolioPage() {
           if (savedUsernames) {
             const parsed = JSON.parse(savedUsernames);
             setUsernames(parsed);
+            sessionStorage.setItem(CACHE_KEYS.usernames, JSON.stringify(parsed));
+            sessionStorage.setItem(CACHE_KEYS.userId, user?.id);
             fetchProfileData(parsed);
           } else {
             setShowSetupModal(true);
@@ -48,6 +89,8 @@ function CodeFolioPage() {
         if (savedUsernames) {
           const parsed = JSON.parse(savedUsernames);
           setUsernames(parsed);
+          sessionStorage.setItem(CACHE_KEYS.usernames, JSON.stringify(parsed));
+          sessionStorage.setItem(CACHE_KEYS.userId, user?.id);
           fetchProfileData(parsed);
         } else {
           setShowSetupModal(true);
@@ -61,18 +104,18 @@ function CodeFolioPage() {
   const fetchProfileData = async (usernames) => {
     setLoading(true);
     const mockData = {
-      totalQuestions: 0, // Will be calculated from all platforms
-      totalActivedays: 0, // Will be calculated from all platforms
-      easy: 360,
-      medium: 524,
-      hard: 98,
-      leetcodeRanking: 1906,
-      leetcodeContests: 23,
-      leetcodeRating: 1906,
-      codeforcesRating: 1543,
-      codeforcesMaxRating: 1543,
-      codeforcesRank: "Specialist",
-      codeforcesContests: 16,
+      totalQuestions: 0,
+      totalActivedays: 0,
+      easy: 0,
+      medium: 0,
+      hard: 0,
+      leetcodeRanking: 0,
+      leetcodeContests: 0,
+      leetcodeRating: 0,
+      codeforcesRating: 0,
+      codeforcesMaxRating: 0,
+      codeforcesRank: "",
+      codeforcesContests: 0,
       codeforcesProblems: 0,
       badges: [],
       submissionCalendar: null,
@@ -82,6 +125,13 @@ function CodeFolioPage() {
     let codeforcesQuestions = 0;
     let leetcodeActiveDays = 0;
     let codeforcesActiveDays = 0;
+    let leetcodeDataFetched = false;
+    let codeforcesDataFetched = false;
+    
+    const newPlatformStatus = {
+      leetcode: false,
+      codeforces: false,
+    };
     
     try {
       // Fetch LeetCode data
@@ -97,15 +147,17 @@ function CodeFolioPage() {
             // Parse LeetCode data structure
             leetcodeQuestions = lcData.totalQuestions || 0;
             leetcodeActiveDays = lcData.activeDays || 0;
-            mockData.easy = lcData.easy || 360;
-            mockData.medium = lcData.medium || 524;
-            mockData.hard = lcData.hard || 98;
-            mockData.leetcodeRanking = lcData.contestRanking || lcData.ranking || 1906;
-            mockData.leetcodeRating = lcData.contestRating || 1906;
-            mockData.leetcodeContests = lcData.contestsAttended || 23;
+            mockData.easy = lcData.easy || 0;
+            mockData.medium = lcData.medium || 0;
+            mockData.hard = lcData.hard || 0;
+            mockData.leetcodeRanking = lcData.contestRanking || lcData.ranking || 0;
+            mockData.leetcodeRating = lcData.contestRating || 0;
+            mockData.leetcodeContests = lcData.contestsAttended || 0;
             mockData.leetcodeProblems = leetcodeQuestions;
             mockData.badges = Array.isArray(lcData.badges) ? lcData.badges : [];
             mockData.submissionCalendar = lcData.submissionCalendar || null;
+            leetcodeDataFetched = true;
+            newPlatformStatus.leetcode = true;
             
             toast.success('LeetCode data loaded', { id: 'leetcode-fetch' });
             
@@ -121,10 +173,12 @@ function CodeFolioPage() {
             const errorMsg = leetcodeResponse.message || "Could not fetch LeetCode data";
             toast.error(errorMsg, { id: 'leetcode-fetch' });
             console.log("LeetCode API Response:", leetcodeResponse);
+            newPlatformStatus.leetcode = false;
           }
         } catch (error) {
           console.error("Error fetching LeetCode data:", error);
           toast.error("Error connecting to LeetCode API", { id: 'leetcode-fetch' });
+          newPlatformStatus.leetcode = false;
         }
       }
       
@@ -136,11 +190,13 @@ function CodeFolioPage() {
           if (cfResponse.success && cfResponse.data) {
             codeforcesQuestions = cfResponse.data.problemsSolved || 0;
             codeforcesActiveDays = cfResponse.data.activeDays || 0;
-            mockData.codeforcesRating = cfResponse.data.rating || 1543;
-            mockData.codeforcesMaxRating = cfResponse.data.maxRating || 1543;
-            mockData.codeforcesRank = cfResponse.data.rank || "Specialist";
+            mockData.codeforcesRating = cfResponse.data.rating || 0;
+            mockData.codeforcesMaxRating = cfResponse.data.maxRating || 0;
+            mockData.codeforcesRank = cfResponse.data.rank || "";
             mockData.codeforcesProblems = codeforcesQuestions;
             mockData.codeforcesContests = cfResponse.data.contests || 0;
+            codeforcesDataFetched = true;
+            newPlatformStatus.codeforces = true;
             
             toast.success('CodeForces data loaded', { id: 'codeforces-fetch' });
             
@@ -154,10 +210,12 @@ function CodeFolioPage() {
             const errorMsg = cfResponse.message || "Could not fetch CodeForces data";
             toast.error(errorMsg, { id: 'codeforces-fetch' });
             console.log("CodeForces API Response:", cfResponse);
+            newPlatformStatus.codeforces = false;
           }
         } catch (error) {
           console.error("Error fetching CodeForces data:", error);
           toast.error("Error connecting to CodeForces API", { id: 'codeforces-fetch' });
+          newPlatformStatus.codeforces = false;
         }
       }
       
@@ -178,33 +236,54 @@ function CodeFolioPage() {
         totalActiveDays: mockData.totalActivedays
       });
       
+      // Only set profile data if at least one platform was successfully fetched
+      if (!leetcodeDataFetched && !codeforcesDataFetched) {
+        setProfileData(null);
+        setPlatformStatus(newPlatformStatus);
+      } else {
+        setProfileData(mockData);
+        setPlatformStatus(newPlatformStatus);
+        // Cache the profile data and platform status for this session
+        sessionStorage.setItem(CACHE_KEYS.profileData, JSON.stringify(mockData));
+        sessionStorage.setItem(CACHE_KEYS.platformStatus, JSON.stringify(newPlatformStatus));
+      }
+      
     } catch (error) {
       console.error("Error fetching profile data:", error);
       toast.error("Error loading data");
+      setProfileData(null);
+      setPlatformStatus(newPlatformStatus);
     }
     
-    setProfileData(mockData);
     setLoading(false);
   };
 
   const handleSaveUsernames = async (newUsernames) => {
     try {
+      // Clear cached profile data and platform status since usernames changed
+      sessionStorage.removeItem(CACHE_KEYS.profileData);
+      sessionStorage.removeItem(CACHE_KEYS.platformStatus);
+      
       // Save to backend
       const response = await saveCodeFolioUsernames(newUsernames);
       if (response && response.success) {
         setUsernames(newUsernames);
+        // Update usernames cache
+        sessionStorage.setItem(CACHE_KEYS.usernames, JSON.stringify(newUsernames));
         fetchProfileData(newUsernames);
         toast.success("Usernames saved to database!");
       } else {
         toast.error("Failed to save to database, saving locally.");
         localStorage.setItem(`codefolio_usernames_${user?.id}`, JSON.stringify(newUsernames));
         setUsernames(newUsernames);
+        sessionStorage.setItem(CACHE_KEYS.usernames, JSON.stringify(newUsernames));
         fetchProfileData(newUsernames);
       }
     } catch (error) {
       toast.error("Error saving to database, saving locally.");
       localStorage.setItem(`codefolio_usernames_${user?.id}`, JSON.stringify(newUsernames));
       setUsernames(newUsernames);
+      sessionStorage.setItem(CACHE_KEYS.usernames, JSON.stringify(newUsernames));
       fetchProfileData(newUsernames);
     }
   };
@@ -234,16 +313,18 @@ function CodeFolioPage() {
               <TrendingUp className="w-12 h-12 text-primary" />
             </div>
             <h1 className="text-4xl font-bold text-neutral font-serif mb-4">
-              Welcome to CodeFolio
+              {!usernames ? "Welcome to CodeFolio" : "Unable to Load Data"}
             </h1>
             <p className="text-neutral/60 mb-8">
-              Setup your coding platform usernames to start tracking your progress across LeetCode, CodeForces, and CodeChef.
+              {!usernames 
+                ? "Setup your coding platform usernames to start tracking your progress across LeetCode, CodeForces, and CodeChef."
+                : "We couldn't fetch your data from the coding platforms. Please check your usernames or try again later."}
             </p>
             <button
               onClick={() => setShowSetupModal(true)}
               className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-semibold"
             >
-              Setup Usernames
+              {!usernames ? "Setup Usernames" : "Update Settings"}
             </button>
           </div>
         </div>
@@ -304,17 +385,17 @@ function CodeFolioPage() {
               {/* Left Column */}
               <div className="space-y-6">
                 {/* Total Questions & Active Days */}
-                {usernames.leetcode && profileData && (
+                {platformStatus.leetcode && profileData && (
                   <CodeFolioStats stats={profileData} />
                 )}
                 
                 {/* Problems Solved */}
-                {usernames.leetcode && profileData && (
+                {platformStatus.leetcode && profileData && (
                   <CodeFolioProblems stats={profileData} />
                 )}
                 
                 {/* Competitive Programming */}
-                {usernames.codeforces && profileData && (
+                {platformStatus.codeforces && profileData && (
                   <CompetitiveProgramming codeforcesProblems={profileData.codeforcesProblems} />
                 )}
               </div>
@@ -322,7 +403,7 @@ function CodeFolioPage() {
               {/* Right Column */}
               <div className="space-y-6">
                 {/* Total Contests with awards */}
-                {(usernames.leetcode || usernames.codeforces) && profileData && (
+                {(platformStatus.leetcode || platformStatus.codeforces) && profileData && (
                   <CodeFolioContests
                     contests={profileData.leetcodeContests}
                     ranking={profileData.leetcodeRating}
@@ -331,21 +412,21 @@ function CodeFolioPage() {
                     leetcodeContests={profileData.leetcodeContests}
                     codeforcesContests={profileData.codeforcesContests}
                     badges={profileData.badges}
-                    hasLeetCode={!!usernames.leetcode}
-                    hasCodeForces={!!usernames.codeforces}
+                    hasLeetCode={platformStatus.leetcode}
+                    hasCodeForces={platformStatus.codeforces}
                   />
                 )}
                 
                 {/* Contest Rankings */}
-                {(usernames.leetcode || usernames.codeforces) && profileData && (
+                {(platformStatus.leetcode || platformStatus.codeforces) && profileData && (
                   <ContestRankings
                     leetcodeRating={profileData.leetcodeRating}
                     leetcodeMaxRating={profileData.leetcodeRating}
                     codeforcesRating={profileData.codeforcesRating}
                     codeforcesMaxRating={profileData.codeforcesMaxRating}
                     codeforcesRank={profileData.codeforcesRank}
-                    hasLeetCode={!!usernames.leetcode}
-                    hasCodeForces={!!usernames.codeforces}
+                    hasLeetCode={platformStatus.leetcode}
+                    hasCodeForces={platformStatus.codeforces}
                   />
                 )}
               </div>

@@ -2,7 +2,8 @@ import { Trophy, TrendingUp } from "lucide-react";
 import { SiLeetcode, SiCodeforces } from "react-icons/si";
 
 function CodeFolioContests({ contests, ranking, codeforcesRating, codeforcesRank, leetcodeContests, codeforcesContests, badges, hasLeetCode, hasCodeForces }) {
-  const totalContests = (leetcodeContests || 23) + (codeforcesContests || 16);
+  // Only sum contests from platforms that were successfully fetched
+  const totalContests = (hasLeetCode ? leetcodeContests : 0) + (hasCodeForces ? codeforcesContests : 0);
   
   // Filter and prepare badges for display
   const allBadges = Array.isArray(badges) ? badges : [];
@@ -23,7 +24,7 @@ function CodeFolioContests({ contests, ranking, codeforcesRating, codeforcesRank
                 <SiLeetcode className="text-orange-500 text-lg" />
                 LeetCode
               </span>
-              <span className="text-xl font-bold text-neutral">{leetcodeContests || 23}</span>
+              <span className="text-xl font-bold text-neutral">{leetcodeContests}</span>
             </div>
           )}
           {hasCodeForces && (
@@ -32,7 +33,7 @@ function CodeFolioContests({ contests, ranking, codeforcesRating, codeforcesRank
                 <SiCodeforces className="text-blue-500 text-lg" />
                 CodeForces
               </span>
-              <span className="text-xl font-bold text-neutral">{codeforcesContests || 16}</span>
+              <span className="text-xl font-bold text-neutral">{codeforcesContests}</span>
             </div>
           )}
         </div>
