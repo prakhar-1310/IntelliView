@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import { BookOpenIcon, LayoutDashboardIcon, SparklesIcon, TrophyIcon, LibraryIcon } from "lucide-react";
+import { BookOpenIcon, LayoutDashboardIcon, SparklesIcon, TrophyIcon, LibraryIcon, TrendingUpIcon } from "lucide-react";
 import { UserButton, useUser } from "@clerk/clerk-react";
 import { isAdmin } from "../lib/admin";
 
@@ -87,6 +87,24 @@ function Navbar() {
             <div className="flex items-center gap-x-2.5">
               <LibraryIcon className="size-4" />
               <span className="hidden sm:inline">Resources</span>
+            </div>
+          </Link>
+
+          {/* CODEFOLIO PAGE LINK */}
+          <Link
+            to={"/codefolio"}
+            className={`px-4 py-2.5 rounded-lg transition-all duration-200 text-[10px] font-bold tracking-wider uppercase
+              ${
+                isActive("/codefolio")
+                  ? "bg-[#451a21] text-white"
+                  : "hover:bg-black/5 text-black/60 hover:text-black"
+              }
+              
+              `}
+          >
+            <div className="flex items-center gap-x-2.5">
+              <TrendingUpIcon className="size-4" />
+              <span className="hidden sm:inline">CodeFolio</span>
             </div>
           </Link>
 
