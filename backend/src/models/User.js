@@ -19,6 +19,14 @@ const userSchema = new mongoose.Schema(
             type:String,
             required:true,
             unique:true,
+        },
+        codefolioUsernames:{
+            leetcode: { type: String, default: "" },
+            codeforces: { type: String, default: "" },
+            codechef: { type: String, default: "" },
+            location: { type: String, default: "" },
+            university: { type: String, default: "" },
+            about: { type: String, default: "" }
         }
     },
     {timestamps : true} // createdAt, updatedAt

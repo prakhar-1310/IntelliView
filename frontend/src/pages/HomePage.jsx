@@ -75,7 +75,7 @@ function HomePage() {
 
       {/* HERO SECTION */}
       <section className="relative min-h-screen flex flex-col lg:flex-row overflow-hidden">
-        <div className="w-full lg:w-[48%] bg-[#451a21] p-8 lg:p-20 flex flex-col justify-between relative text-[#fdfcfb] pt-32 lg:pt-40">
+        <div className="w-full lg:w-[60%] bg-[#451a21] p-8 lg:p-20 flex flex-col justify-between relative text-[#fdfcfb] pt-32 lg:pt-40">
           <div className="space-y-12">
             <div className="flex items-start justify-between">
               <div className="space-y-1">
@@ -89,23 +89,69 @@ function HomePage() {
               </div>
             </div>
             
-            <h1 className="text-7xl md:text-[9rem] font-serif font-light leading-[0.85] tracking-tighter">
-              Code live.<br />
-              Think aloud.<br />
-              with <span className="relative">
-                Confidence.
-                <div className="absolute -right-16 top-1/2 -translate-y-1/2 size-12 rounded-full border border-white/30 flex items-center justify-center">
-                  <div className="size-6 border-2 border-white/60 rounded-sm rotate-45 flex items-center justify-center">
-                    <div className="size-2 bg-[#d4af37] rounded-full"></div>
-                  </div>
-                </div>
-              </span>
+            <h1
+              className="font-serif font-light tracking-tighter"
+              style={{
+                fontSize: '6vw',
+                lineHeight: 1.05,
+                fontWeight: 400,
+                color: '#fff',
+                background: '#4b1921',
+                width: 'fit-content',
+                padding: '1vw 0',
+                maxWidth: '100%',
+              }}
+            >
+              <div style={{ whiteSpace: 'nowrap' }}>
+                <span style={{ color: '#d4af37' }}>Code</span><span style={{ color: '#fff' }}> live.</span>
+              </div>
+              <div style={{ whiteSpace: 'nowrap' }}>
+                <span style={{ color: '#d4af37' }}>Think</span><span style={{ color: '#fff' }}> aloud.</span>
+              </div>
+              <div style={{ whiteSpace: 'nowrap', display: 'inline-block', position: 'relative' }}>
+                <span style={{ color: '#fff' }}>with </span>
+                <span style={{ color: '#d4af37' }}>Confidence</span>
+                <span style={{
+                  position: 'absolute',
+                  right: '-3vw',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '3vw',
+                  height: '3vw',
+                  borderRadius: '9999px',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                }}>
+                  <span style={{
+                    width: '1.5vw',
+                    height: '1.5vw',
+                    border: '2px solid rgba(255,255,255,0.6)',
+                    borderRadius: '0.25vw',
+                    transform: 'rotate(45deg)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <span style={{
+                      width: '0.5vw',
+                      height: '0.5vw',
+                      background: '#d4af37',
+                      borderRadius: '9999px',
+                      display: 'inline-block',
+                    }}></span>
+                  </span>
+                </span>
+              </div>
             </h1>
 
-            <div className="max-w-sm space-y-4">
-              <p className="text-sm opacity-70 font-light leading-relaxed">
-                The ultimate platform for collaborative coding interviews and pair programming. 
-                Connect face-to-face, code in real-time, and ace your technical assessments with professional rigor.
+            <div className="max-w-3xl space-y-4">
+              <p className="text-2xl opacity-70 font-light leading-relaxed text-left">
+                Turn interviews into a skill, not a gamble.<br />
+                Practice real-world coding interviews with live editors,<br />
+                structured problems, and AI-powered feedback that helps<br />
+                you think clearly, explain better, and perform under pressure.
               </p>
             </div>
           </div>
@@ -123,21 +169,27 @@ function HomePage() {
           </div>
         </div>
 
-        <div className="w-full lg:w-[52%] relative overflow-hidden bg-slate-900">
+        <div className="w-full lg:w-[40%] relative overflow-hidden bg-slate-900">
           <img 
-            src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2000&auto=format&fit=crop" 
-            alt="Lead Architectural Coach" 
+            src="https://plus.unsplash.com/premium_photo-1661762742902-11e0bbc0b863?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+            alt="Professional woman holding laptop premium Unsplash" 
             className="w-full h-full object-cover grayscale brightness-75 contrast-125 hover:scale-105 transition-transform duration-[3s] ease-out"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-          <div className="absolute bottom-16 right-16 text-right space-y-1">
-            <div className="text-[#fdfcfb] font-serif text-5xl tracking-tighter">Elena Vance</div>
-            <div className="text-[#fdfcfb]/60 text-[10px] font-bold tracking-[0.3em] uppercase">
-              Principal AI Interviewer<br />Specializing in Distributed Systems
-            </div>
-          </div>
+          {/* Removed Elena Vance overlay */}
         </div>
       </section>
+
+      {/* QUOTE SECTION */}
+      <div className="w-full flex flex-col items-center justify-center my-12">
+        <div className="w-full flex items-center justify-center">
+          <div className="flex-grow h-px bg-[#d4af37]/40 mx-4" />
+          <span className="text-xl md:text-2xl font-serif italic text-[#d4af37] text-center px-2" style={{fontStyle: 'italic', fontWeight: 400}}>
+            Interviews aren&apos;t about knowing everything.<br />They&apos;re about <span className="font-semibold">showing how you think.</span>
+          </span>
+          <div className="flex-grow h-px bg-[#d4af37]/40 mx-4" />
+        </div>
+      </div>
 
       {/* MISSION SECTION */}
       <section className="py-24 px-6 border-b border-black/5 bg-[#fdfcfb]">
@@ -289,26 +341,29 @@ function HomePage() {
       <footer className="py-24 px-6 bg-[#451a21] text-[#fdfcfb]">
         <div className="max-w-7xl mx-auto">
           {/* TOP SECTION */}
-          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-12 mb-16">
+          <div className="flex flex-col md:flex-row items-start justify-between gap-12 mb-16">
             {/* LEFT: CREATOR PROFILE */}
-            <div className="flex items-center gap-4">
-              <img
-                src="/profile.jpg"
-                alt="Prakhar Shahi"
-                className="size-16 rounded-full object-cover border-2 border-[#d4af37]/30"
-              />
-              <div className="flex flex-col">
-                <h3 className="text-xl font-serif font-semibold text-white">
-                  Prakhar Shahi
-                </h3>
-                <span className="text-sm text-white/60 font-light">
-                  Creator of IntelliView
-                </span>
+            <div className="flex flex-col items-start gap-6 md:w-[65%] max-w-3xl text-left">
+              <div className="flex items-center gap-4">
+                <img
+                  src="/profile.jpg"
+                  alt="Prakhar Shahi profile"
+                  className="size-20 rounded-full object-cover border border-white/20"
+                />
+                <div className="flex flex-col">
+                  <h3 className="text-xl font-serif font-semibold text-white">
+                    Prakhar Shahi
+                  </h3>
+                  <span className="text-sm text-white/60 font-light">
+                    Creator of IntelliView
+                  </span>
+                </div>
               </div>
+              
             </div>
 
             {/* RIGHT: SOCIAL LINKS */}
-            <div className="flex gap-6">
+            <div className="flex gap-6 md:justify-end md:w-[35%]">
               <a
                 href="https://www.linkedin.com/in/prakhar-shahi1310/"
                 target="_blank"

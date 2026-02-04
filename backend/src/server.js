@@ -14,6 +14,7 @@ import sessionRoutes from "./routes/sessionRoutes.js";
 import problemRoutes from "./routes/problemRoutes.js";
 import youtubeRoutes from "./routes/youtubeRoutes.js";
 import grokRoutes from "../routes/grok.js";
+import codefolioRoutes from "./routes/codefolioRoutes.js";
 
 
 const app = express();
@@ -31,6 +32,7 @@ app.use("/api/sessions", sessionRoutes);
 app.use("/api/problems", problemRoutes);
 app.use("/api/youtube", youtubeRoutes);
 app.use("/api/grok", grokRoutes);
+app.use("/api/codefolio", codefolioRoutes);
 
 app.get("/msg", (req,res)=>{
     res.status(200).json({

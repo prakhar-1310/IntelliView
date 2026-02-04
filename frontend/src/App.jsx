@@ -10,6 +10,7 @@ import ProblemsPage from "./pages/ProblemsPage";
 import SessionPage from "./pages/SessionPage";
 import ContestsPage from "./pages/ContestsPage";
 import ResourcesPage from "./pages/ResourcesPage";
+import CodeFolioPage from "./pages/CodeFolioPage";
 
 function App() {
   const { isSignedIn, isLoaded } = useUser();
@@ -26,6 +27,7 @@ function App() {
         <Route path="/problems" element={isSignedIn ? <ProblemsPage /> : <Navigate to={"/"} />} />
         <Route path="/contests" element={isSignedIn ? <ContestsPage /> : <Navigate to={"/"} />} />
         <Route path="/resources" element={isSignedIn ? <ResourcesPage /> : <Navigate to={"/"} />} />
+        <Route path="/codefolio" element={isSignedIn ? <CodeFolioPage /> : <Navigate to={"/"} />} />
         <Route path="/add-problem" element={isSignedIn ? <AddProblem /> : <Navigate to={"/"} />} />
 
         <Route path="/problem/:id" element={isSignedIn ? <ProblemPage /> : <Navigate to={"/"} />} />
