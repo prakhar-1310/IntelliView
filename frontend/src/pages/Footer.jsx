@@ -9,7 +9,7 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="bg-base-200 border-t border-base-300">
+    <footer className="bg-gray-50 border-t border-gray-300">
       <div className="max-w-7xl mx-auto px-4 py-10">
         
         {/* TOP SECTION */}
@@ -20,14 +20,14 @@ export default function Footer() {
             <img
               src="/profile.jpg"
               alt="Prakhar Shahi"
-              className="size-14 rounded-full object-cover border border-base-300"
+              className="size-14 rounded-full object-cover border border-gray-300"
             />
 
             <div className="flex flex-col">
-              <h3 className="text-base font-semibold text-base-content">
+              <h3 className="text-base font-semibold text-gray-900">
                 Prakhar Shahi
               </h3>
-              <span className="text-sm text-base-content/60">
+              <span className="text-sm text-gray-900/60">
                 Creator of IntelliView
               </span>
             </div>
@@ -42,7 +42,7 @@ export default function Footer() {
                 aria-label={label}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-base-content/60 hover:text-primary transition-colors duration-200"
+                className="text-gray-900/60 hover:text-primary transition-colors duration-200"
               >
                 <Icon />
               </a>
@@ -51,16 +51,16 @@ export default function Footer() {
         </div>
 
         {/* DIVIDER */}
-        <div className="my-6 h-px w-full bg-base-300" />
+        <div className="my-6 h-px w-full bg-gray-200" />
 
         {/* BOTTOM SECTION */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-base-content/50">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-900/50">
           <p>
             © {new Date().getFullYear()} IntelliView. All rights reserved.
           </p>
 
           <p>
-            Made with ❤️ by <span className="font-medium text-base-content/70">Prakhar Shahi</span>
+            Made with ❤️ by <span className="font-medium text-gray-900/70">Prakhar Shahi</span>
           </p>
         </div>
       </div>

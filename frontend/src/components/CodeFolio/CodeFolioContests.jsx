@@ -10,7 +10,7 @@ function CodeFolioContests({ contests, ranking, codeforcesRating, codeforcesRank
   const displayBadges = allBadges.slice(0, 4);
   
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border border-base-300 space-y-6">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-300 space-y-6">
       {/* Total Contests */}
       <div>
         <p className="text-base text-neutral/60 mb-2 font-medium">Total Contests</p>

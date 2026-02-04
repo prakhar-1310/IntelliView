@@ -58,7 +58,7 @@ function WelcomeSection({ onCreateSession, hasActiveSession }) {
               </button>
             </div>
             {hasActiveSession && (
-              <p className="text-sm text-base-content/60 mt-2">
+              <p className="text-sm text-gray-900/60 mt-2">
                 End your current session to create a new one
               </p>
             )}

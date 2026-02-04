@@ -33,7 +33,7 @@ export default function Popover({ open, anchorRef, onClose, children }) {
     : { display: "none" };
 
   return (
-    <div ref={popoverRef} style={style} className="bg-base-100 rounded-lg shadow-lg p-4 max-w-xs w-[320px] border border-base-300">
+    <div ref={popoverRef} style={style} className="bg-white rounded-lg shadow-lg p-4 max-w-xs w-[320px] border border-gray-300">
       {children}
     </div>
   );

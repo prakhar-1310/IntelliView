@@ -214,7 +214,15 @@ function ProblemsPage() {
                           {problem.difficulty}
                         </span>
                       </div>
-                      <p className="text-sm text-black/60 font-light">{problem.category}</p>
+                      <p className="text-sm text-black/60 font-light">
+                        <span className={`px-3 py-1 rounded-full text-[9px] font-bold tracking-wider uppercase text-white ${
+                          problem.difficulty?.toLowerCase() === 'easy' ? 'bg-[#22c55e]' :
+                          problem.difficulty?.toLowerCase() === 'medium' ? 'bg-[#eab308]' :
+                          'bg-[#ef4444]'
+                        }`}>
+                          {problem.category}
+                        </span>
+                      </p>
                     </div>
                   </div>
                   <p className="text-black/70 font-light mb-3">{problem.description.text}</p>

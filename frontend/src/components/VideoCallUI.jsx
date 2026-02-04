@@ -34,7 +34,7 @@ function VideoCallUI({ chatClient, channel }) {
     <div className="h-full flex gap-3 relative str-video">
       <div className="flex-1 flex flex-col gap-3">
         {/* Participants count badge and Chat Toggle */}
-        <div className="flex items-center justify-between gap-2 bg-base-100 p-3 rounded-lg shadow">
+        <div className="flex items-center justify-between gap-2 bg-white p-3 rounded-lg shadow">
           <div className="flex items-center gap-2">
             <UsersIcon className="w-5 h-5 text-primary" />
             <span className="font-semibold">
@@ -44,7 +44,7 @@ function VideoCallUI({ chatClient, channel }) {
           {chatClient && channel && (
             <button
               onClick={() => setIsChatOpen(!isChatOpen)}
-              className={`btn btn-sm gap-2 ${isChatOpen ? "btn-primary" : "btn-ghost"}`}
+              className={`px-3 py-1.5 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 ${isChatOpen ? "bg-primary text-white hover:bg-primary/90" : "bg-gray-200 text-gray-900 hover:bg-gray-300"}`}
               title={isChatOpen ? "Hide chat" : "Show chat"}
             >
               <MessageSquareIcon className="size-4" />
@@ -53,11 +53,11 @@ function VideoCallUI({ chatClient, channel }) {
           )}
         </div>
 
-        <div className="flex-1 bg-base-300 rounded-lg overflow-hidden relative">
+        <div className="flex-1 bg-gray-200 rounded-lg overflow-hidden relative">
           <SpeakerLayout />
         </div>
 
-        <div className="bg-base-100 p-3 rounded-lg shadow flex justify-center">
+        <div className="bg-white p-3 rounded-lg shadow flex justify-center">
           <CallControls onLeave={() => navigate("/dashboard")} />
         </div>
       </div>

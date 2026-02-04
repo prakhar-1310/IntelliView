@@ -69,21 +69,21 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
     setHintLoading(false);
   };
   return (
-    <div className="h-full overflow-y-auto bg-base-200">
+    <div className="h-full overflow-y-auto bg-gray-50">
       {/* HEADER SECTION */}
-      <div className="p-6 bg-base-100 border-b border-base-300">
+      <div className="p-6 bg-white border-b border-gray-300">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
-            <span className="badge badge-primary badge-lg font-bold">#{problem.id}</span>
-            <h1 className="text-3xl font-bold text-base-content">{problem.title}</h1>
+            <span className="px-3 py-1.5 bg-primary text-white rounded-full font-semibold text-sm">#{problem.id}</span>
+            <h1 className="text-3xl font-bold text-gray-900">{problem.title}</h1>
           </div>
           <div className="flex items-center gap-2">
             {isAccepted && (
-              <span className="badge badge-success badge-lg gap-2">
+              <span className="px-3 py-1.5 bg-green-500 text-white rounded-full font-semibold text-sm gap-2">
                 ✓ Accepted
               </span>
             )}
-            <span className={`badge ${getDifficultyBadgeClass(problem.difficulty)}`}>{problem.difficulty}</span>
+            <span className={`px-3 py-1.5 rounded-full font-semibold text-sm ${getDifficultyBadgeClass(problem.difficulty)}`}>{problem.difficulty}</span>
             <a
               href={`https://www.youtube.com/results?search_query=${encodeURIComponent(problem.title + ' programming tutorial')}`}
               target="_blank"
@@ -93,16 +93,14 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
             >
               <button
                 ref={videoBtnRef}
-                className="badge badge-success badge-lg flex items-center justify-center p-0 w-8 h-8 min-w-0 min-h-0"
-                style={{ borderRadius: '9999px' }}
+                className="w-8 h-8 flex items-center justify-center bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors"
                 onClick={handleVideoClick}
                 title="Show YouTube help video"
               >
                 <img
                   src="/play-circle.svg"
                   alt="YouTube Video"
-                  className="w-6 h-6"
-                  style={{ filter: 'none' }}
+                  className="w-5 h-5"
                 />
               </button>
               <Popover open={popoverOpen} anchorRef={videoBtnRef} onClose={() => setPopoverOpen(false)}>
@@ -132,8 +130,7 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
             {/* Hint button right of video button */}
             <button
               ref={hintBtnRef}
-              className="badge badge-info badge-lg flex items-center justify-center p-0 w-8 h-8 min-w-0 min-h-0 ml-2"
-              style={{ borderRadius: '9999px' }}
+              className="w-8 h-8 flex items-center justify-center bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors ml-2"
               onClick={handleHintClick}
               title="Show a hint for this problem"
             >
@@ -147,9 +144,9 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
                 {!hintLoading && !hintError && hints.length > 0 && (
                   <div className="flex flex-col w-full">
                     {hints.map((hint, idx) => (
-                      <div key={idx} className="border-b border-base-300 last:border-b-0">
+                      <div key={idx} className="border-b border-gray-300 last:border-b-0">
                         <button
-                          className="flex items-center w-full px-2 py-3 text-left gap-2 hover:bg-base-200 focus:bg-base-200"
+                          className="flex items-center w-full px-2 py-3 text-left gap-2 hover:bg-gray-50 focus:bg-gray-50"
                           onClick={() => setOpenHint(openHint === idx ? null : idx)}
                         >
                           <span role="img" aria-label="Hint">💡</span>
@@ -157,7 +154,7 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
                           <span className="ml-auto text-lg">{openHint === idx ? '▾' : '▸'}</span>
                         </button>
                         {openHint === idx && (
-                          <div className="px-6 pb-3 text-base-content/90 whitespace-pre-line">
+                          <div className="px-6 pb-3 text-gray-900/90 whitespace-pre-line">
                             {hint}
                           </div>
                         )}
@@ -169,12 +166,18 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
             </Popover>
           </div>
         </div>
-        <p className="text-base-content/60">{problem.category}</p>
+        <span className={`px-3 py-1.5 rounded-full text-[9px] font-bold tracking-wider uppercase text-white inline-block ${
+          problem.difficulty?.toLowerCase() === 'easy' ? 'bg-[#22c55e]' :
+          problem.difficulty?.toLowerCase() === 'medium' ? 'bg-[#eab308]' :
+          'bg-[#ef4444]'
+        }`}>
+          {problem.category}
+        </span>
 
         {/* Problem selector */}
         <div className="mt-4">
           <select
-            className="select select-sm w-full"
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
             value={currentProblemId}
             onChange={(e) => onProblemChange(e.target.value)}
           >
@@ -189,13 +192,13 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
 
       <div className="p-6 space-y-6">
         {/* PROBLEM DESC */}
-        <div className="bg-base-100 rounded-xl shadow-sm p-5 border border-base-300">
-          <h2 className="text-xl font-bold text-base-content">Description</h2>
+        <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-300">
+          <h2 className="text-xl font-bold text-gray-900">Description</h2>
 
           <div className="space-y-3 text-base leading-relaxed">
-            <p className="text-base-content/90">{problem.description.text}</p>
+            <p className="text-gray-900/90">{problem.description.text}</p>
             {problem.description.notes.map((note, idx) => (
-              <p key={idx} className="text-base-content/90">
+              <p key={idx} className="text-gray-900/90">
                 {note}
               </p>
             ))}
@@ -204,16 +207,16 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
         </div>
 
         {/* EXAMPLES SECTION */}
-        <div className="bg-base-100 rounded-xl shadow-sm p-5 border border-base-300">
-          <h2 className="text-xl font-bold mb-4 text-base-content">Examples</h2>
+        <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-300">
+          <h2 className="text-xl font-bold mb-4 text-gray-900">Examples</h2>
           <div className="space-y-4">
             {problem.examples.map((example, idx) => (
               <div key={idx}>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="badge badge-sm">{idx + 1}</span>
-                  <p className="font-semibold text-base-content">Example {idx + 1}</p>
+                  <span className="px-2 py-1 text-xs bg-gray-200 text-gray-900 rounded-full">{idx + 1}</span>
+                  <p className="font-semibold text-gray-900">Example {idx + 1}</p>
                 </div>
-                <div className="bg-base-200 rounded-lg p-4 font-mono text-sm space-y-1.5">
+                <div className="bg-gray-50 rounded-lg p-4 font-mono text-sm space-y-1.5">
                   <div className="flex gap-2">
                     <span className="text-primary font-bold min-w-[70px]">Input:</span>
                     <span>{example.input}</span>
@@ -223,8 +226,8 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
                     <span>{example.output}</span>
                   </div>
                   {example.explanation && (
-                    <div className="pt-2 border-t border-base-300 mt-2">
-                      <span className="text-base-content/60 font-sans text-xs">
+                    <div className="pt-2 border-t border-gray-300 mt-2">
+                      <span className="text-gray-900/60 font-sans text-xs">
                         <span className="font-semibold">Explanation:</span> {example.explanation}
                       </span>
                     </div>
@@ -236,9 +239,9 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
         </div>
 
         {/* CONSTRAINTS */}
-        <div className="bg-base-100 rounded-xl shadow-sm p-5 border border-base-300">
-          <h2 className="text-xl font-bold mb-4 text-base-content">Constraints</h2>
-          <ul className="space-y-2 text-base-content/90">
+        <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-300">
+          <h2 className="text-xl font-bold mb-4 text-gray-900">Constraints</h2>
+          <ul className="space-y-2 text-gray-900/90">
             {problem.constraints.map((constraint, idx) => (
               <li key={idx} className="flex gap-2">
                 <span className="text-primary">•</span>

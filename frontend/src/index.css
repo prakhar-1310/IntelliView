@@ -5,9 +5,6 @@
   --color-secondary: #d4af37;
   --color-accent: #8b5a3c;
   --color-neutral: #2a2a2a;
-  --color-base-100: #fdfcfb;
-  --color-base-200: #f5f4f0;
-  --color-base-300: #e8e6e0;
   --color-info: #6C5CE7;
   --color-success: #00b894;
   --color-warning: #fdcb6e;
@@ -23,7 +20,7 @@
 
   /* Apply luxury theme fonts and colors globally */
   body {
-    @apply bg-base-100 text-neutral;
+    @apply bg-white text-neutral;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -39,7 +36,7 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-base-200;
+    @apply bg-gray-100;
   }
 
   ::-webkit-scrollbar-thumb {

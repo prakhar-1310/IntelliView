@@ -28,7 +28,7 @@ function CodeFolioProblems({ stats }) {
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border border-base-300">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-300">
       <h2 className="text-xl font-bold text-neutral mb-2">Problems Solved</h2>
       <p className="text-sm text-neutral/60 mb-4">DSA</p>
 

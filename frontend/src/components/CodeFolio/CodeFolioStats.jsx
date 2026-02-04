@@ -15,7 +15,7 @@ function CodeFolioStats({ stats }) {
       {statCards.map((card, index) => (
         <div
           key={index}
-          className="bg-white rounded-xl shadow-lg p-8 border border-base-300"
+          className="bg-white rounded-xl shadow-lg p-8 border border-gray-300"
         >
           <p className="text-base text-neutral/60 mb-2 font-medium">
             {card.label}

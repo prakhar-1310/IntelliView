@@ -19,7 +19,7 @@ function UsernameSetupModal({ isOpen, onClose, onSave, existingUsernames }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/20 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-neutral font-serif">
@@ -27,7 +27,7 @@ function UsernameSetupModal({ isOpen, onClose, onSave, existingUsernames }) {
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-base-200 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-50 rounded-lg transition-colors"
           >
             <X className="w-5 h-5 text-neutral/60" />
           </button>
@@ -49,7 +49,7 @@ function UsernameSetupModal({ isOpen, onClose, onSave, existingUsernames }) {
                 setUsernames({ ...usernames, leetcode: e.target.value })
               }
               placeholder="e.g., prakhar-1330"
-              className="w-full px-4 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
           </div>
 
@@ -64,7 +64,7 @@ function UsernameSetupModal({ isOpen, onClose, onSave, existingUsernames }) {
                 setUsernames({ ...usernames, codeforces: e.target.value })
               }
               placeholder="e.g., prakhar"
-              className="w-full px-4 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
           </div>
 
@@ -79,7 +79,7 @@ function UsernameSetupModal({ isOpen, onClose, onSave, existingUsernames }) {
                 setUsernames({ ...usernames, codechef: e.target.value })
               }
               placeholder="e.g., prakhar"
-              className="w-full px-4 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
           </div>
 
@@ -94,7 +94,7 @@ function UsernameSetupModal({ isOpen, onClose, onSave, existingUsernames }) {
                 setUsernames({ ...usernames, location: e.target.value })
               }
               placeholder="e.g., India"
-              className="w-full px-4 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
           </div>
 
@@ -109,7 +109,7 @@ function UsernameSetupModal({ isOpen, onClose, onSave, existingUsernames }) {
                 setUsernames({ ...usernames, university: e.target.value })
               }
               placeholder="e.g., GLA University"
-              className="w-full px-4 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
           </div>
 
@@ -124,7 +124,7 @@ function UsernameSetupModal({ isOpen, onClose, onSave, existingUsernames }) {
               }
               placeholder="Tell us about yourself..."
               rows={3}
-              className="w-full px-4 py-2 border border-base-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
             />
           </div>
         </div>
@@ -132,7 +132,7 @@ function UsernameSetupModal({ isOpen, onClose, onSave, existingUsernames }) {
         <div className="flex gap-3 mt-6">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2 bg-base-200 text-neutral rounded-lg hover:bg-base-300 transition-colors font-semibold"
+            className="flex-1 px-4 py-2 bg-gray-50 text-neutral rounded-lg hover:bg-gray-200 transition-colors font-semibold"
           >
             Cancel
           </button>

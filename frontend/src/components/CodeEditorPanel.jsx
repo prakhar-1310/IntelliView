@@ -9,19 +9,17 @@ function CodeEditorPanel({
   onLanguageChange,
   onCodeChange,
   onRunCode,
-  onDebugCode,
-  debugBtnRef,
 }) {
   return (
-    <div className="h-full bg-base-300 flex flex-col">
-      <div className="flex items-center justify-between px-4 py-3 bg-base-100 border-t border-base-300">
+    <div className="h-full bg-gray-200 flex flex-col">
+      <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-300">
         <div className="flex items-center gap-3">
           <img
             src={LANGUAGE_CONFIG[selectedLanguage].icon}
             alt={LANGUAGE_CONFIG[selectedLanguage].name}
             className="size-6"
           />
-          <select className="select select-sm" value={selectedLanguage} onChange={onLanguageChange}>
+          <select className="px-3 py-1 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" value={selectedLanguage} onChange={onLanguageChange}>
             {Object.entries(LANGUAGE_CONFIG).map(([key, lang]) => (
               <option key={key} value={key}>
                 {lang.name}
@@ -31,10 +29,7 @@ function CodeEditorPanel({
         </div>
 
         <div className="flex items-center gap-2">
-          <button ref={debugBtnRef} className="btn btn-primary btn-sm gap-2" onClick={onDebugCode}>
-            🐞 Debug
-          </button>
-          <button className="btn btn-primary btn-sm gap-2" disabled={isRunning} onClick={onRunCode}>
+          <button className="px-3 py-1.5 bg-primary text-white hover:bg-primary/90 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" disabled={isRunning} onClick={onRunCode}>
             {isRunning ? (
               <>
                 <Loader2Icon className="size-4 animate-spin" />

@@ -116,7 +116,7 @@ function AddProblem() {
   };
 
   return (
-    <div className="min-h-screen bg-base-200">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
 
       <div className="max-w-4xl mx-auto px-4 py-10">
@@ -125,17 +125,17 @@ function AddProblem() {
         <form onSubmit={handleSubmit} className="space-y-4">
 
           <input name="id" placeholder="problem-id (unique)"
-            className="input input-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 w-full"
             value={form.id}
             onChange={handleChange} />
 
           <input name="title" placeholder="Title"
-            className="input input-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 w-full"
             value={form.title}
             onChange={handleChange} />
 
           <select name="difficulty"
-            className="select select-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 w-full"
             value={form.difficulty}
             onChange={handleChange}>
             <option>Easy</option>
@@ -144,17 +144,17 @@ function AddProblem() {
           </select>
 
           <input name="category" placeholder="Category (Array • DP)"
-            className="input input-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 w-full"
             value={form.category}
             onChange={handleChange} />
 
           <textarea name="descriptionText" placeholder="Problem Description"
-            className="textarea textarea-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-vertical w-full"
             value={form.descriptionText}
             onChange={handleChange} />
 
           <textarea name="notes" placeholder="Notes (one per line)"
-            className="textarea textarea-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-vertical w-full"
             value={form.notes}
             onChange={handleChange} />
 
@@ -165,47 +165,47 @@ output line
 explanation (optional)
 
 (blank line between examples)`}
-            className="textarea textarea-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-vertical w-full"
             value={form.examples}
             onChange={handleChange} />
 
           <textarea name="constraints"
             placeholder="Constraints (one per line)"
-            className="textarea textarea-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-vertical w-full"
             value={form.constraints}
             onChange={handleChange} />
 
           <textarea name="pyCode" placeholder="Python Starter Code"
-            className="textarea textarea-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-vertical w-full"
             value={form.pyCode}
             onChange={handleChange} />
 
           <textarea name="javaCode" placeholder="Java Starter Code"
-            className="textarea textarea-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-vertical w-full"
             value={form.javaCode}
             onChange={handleChange} />
 
           <textarea name="cppCode" placeholder="C++ Starter Code"
-            className="textarea textarea-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-vertical w-full"
             value={form.cppCode}
             onChange={handleChange} />
 
           <textarea name="pyOutput" placeholder="Python Expected Output"
-            className="textarea textarea-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-vertical w-full"
             value={form.pyOutput}
             onChange={handleChange} />
 
           <textarea name="javaOutput" placeholder="Java Expected Output"
-            className="textarea textarea-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-vertical w-full"
             value={form.javaOutput}
             onChange={handleChange} />
 
           <textarea name="cppOutput" placeholder="C++ Expected Output"
-            className="textarea textarea-bordered w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 resize-vertical w-full"
             value={form.cppOutput}
             onChange={handleChange} />
 
-          <button className="btn btn-primary w-full" disabled={isLoading}>
+          <button className="w-full px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed" disabled={isLoading}>
             {isLoading ? "Loading..." : isEditing ? "Update Problem" : "Save Problem"}
           </button>
         </form>

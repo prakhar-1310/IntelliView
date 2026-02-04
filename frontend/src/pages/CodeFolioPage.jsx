@@ -290,7 +290,7 @@ function CodeFolioPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-base-100">
+      <div className="min-h-screen bg-white">
         <Navbar />
         <div className="flex flex-col items-center justify-center h-96 gap-4">
           <div className="loading loading-spinner loading-lg text-primary"></div>
@@ -305,7 +305,7 @@ function CodeFolioPage() {
 
   if (!usernames || !profileData) {
     return (
-      <div className="min-h-screen bg-base-100">
+      <div className="min-h-screen bg-white">
         <Navbar />
         <div className="container mx-auto px-6 py-16">
           <div className="max-w-2xl mx-auto text-center">
@@ -339,7 +339,7 @@ function CodeFolioPage() {
   }
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
       <div className="container mx-auto px-6 py-8">
@@ -373,7 +373,7 @@ function CodeFolioPage() {
               </div>
               <button
                 onClick={() => setShowSetupModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-base-200 hover:bg-base-300 rounded-lg transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-gray-50 hover:bg-gray-200 rounded-lg transition-colors"
               >
                 <Settings className="w-4 h-4" />
                 <span className="font-semibold text-sm">Settings</span>

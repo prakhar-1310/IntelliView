@@ -30,7 +30,7 @@ function CodeFolioHeatmap({ submissionCalendar }) {
 
   // Get activity color based on level
   const getActivityColor = (level) => {
-    const colors = ["bg-base-200", "bg-success/20", "bg-success/40", "bg-success/60", "bg-success"];
+    const colors = ["bg-gray-50", "bg-success/20", "bg-success/40", "bg-success/60", "bg-success"];
     return colors[level];
   };
 
@@ -85,7 +85,7 @@ function CodeFolioHeatmap({ submissionCalendar }) {
   const monthLabels = getMonthLabels();
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border border-base-300">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-300">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-bold text-neutral flex items-center gap-2">
           <Calendar className="w-6 h-6" />

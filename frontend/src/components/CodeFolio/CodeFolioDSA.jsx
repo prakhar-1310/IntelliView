@@ -15,7 +15,7 @@ function CodeFolioDSA() {
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border border-base-300">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-300">
       <h2 className="text-2xl font-bold text-neutral mb-6">DSA Topic Analysis</h2>
 
       <div className="w-full overflow-x-auto">
@@ -62,7 +62,7 @@ function CodeFolioDSA() {
         {dsaData.slice(0, 5).map((topic, index) => (
           <div
             key={index}
-            className="text-center p-4 bg-base-100 rounded-lg border border-base-300"
+            className="text-center p-4 bg-white rounded-lg border border-gray-300"
           >
             <p className="text-sm font-semibold text-neutral mb-2">
               {topic.name}

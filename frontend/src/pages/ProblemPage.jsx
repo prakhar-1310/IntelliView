@@ -192,14 +192,14 @@ function ProblemPage() {
   };
 
   return (
-    <div className="h-screen bg-base-100 flex flex-col">
+    <div className="h-screen bg-white flex flex-col">
       <Navbar />
 
       {!currentProblem ? (
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-2">Problem not found</h2>
-            <p className="text-base-content/60">The problem you're looking for doesn't exist.</p>
+            <p className="text-gray-900/60">The problem you're looking for doesn't exist.</p>
           </div>
         </div>
       ) : (
@@ -219,7 +219,7 @@ function ProblemPage() {
             </div>
           </Panel>
 
-          <PanelResizeHandle className="w-2 bg-base-300 hover:bg-primary transition-colors cursor-col-resize" />
+          <PanelResizeHandle className="w-2 bg-gray-200 hover:bg-primary transition-colors cursor-col-resize" />
 
           {/* right panel- code editor & output */}
           <Panel defaultSize={60} minSize={30}>
@@ -245,7 +245,7 @@ function ProblemPage() {
                 </Popover>
               </Panel>
 
-              <PanelResizeHandle className="h-2 bg-base-300 hover:bg-primary transition-colors cursor-row-resize" />
+              <PanelResizeHandle className="h-2 bg-gray-200 hover:bg-primary transition-colors cursor-row-resize" />
 
               {/* Bottom panel - Output Panel*/}
 

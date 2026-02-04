@@ -2,7 +2,7 @@ import { SiLeetcode, SiCodeforces } from "react-icons/si";
 
 function ContestRankings({ leetcodeRating, leetcodeMaxRating, codeforcesRating, codeforcesMaxRating, codeforcesRank, hasLeetCode, hasCodeForces }) {
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border border-base-300">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-300">
       <h2 className="text-xl font-bold text-neutral mb-6">Contest Rankings</h2>
       
       <div className="space-y-6">

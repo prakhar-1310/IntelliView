@@ -185,7 +185,7 @@ function GitHubStats({ username }) {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl shadow-lg p-6 border border-base-300">
+      <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-300">
         <div className="flex items-center gap-2 mb-6">
           <Github className="w-6 h-6 text-neutral" />
           <h2 className="text-2xl font-bold text-neutral">GitHub Profile</h2>
@@ -224,7 +224,7 @@ function GitHubStats({ username }) {
   const displayContributions = contributions.slice(-30); // Show last 30 weeks (~7 months)
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 border border-base-300">
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-300">
       <div className="flex items-center gap-2 mb-6">
         <Github className="w-6 h-6 text-neutral" />
         <h2 className="text-2xl font-bold text-neutral">GitHub Profile</h2>
@@ -233,7 +233,7 @@ function GitHubStats({ username }) {
       {/* Top Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         {/* Total Contributions */}
-        <div className="bg-base-100 rounded-lg p-6 relative">
+        <div className="bg-white rounded-lg p-6 relative">
           <div className="absolute top-4 right-4">
             <Info className="w-4 h-4 text-neutral/40" />
           </div>
@@ -242,7 +242,7 @@ function GitHubStats({ username }) {
         </div>
 
         {/* Total Active Days */}
-        <div className="bg-base-100 rounded-lg p-6 relative">
+        <div className="bg-white rounded-lg p-6 relative">
           <div className="absolute top-4 right-4">
             <Info className="w-4 h-4 text-neutral/40" />
           </div>
@@ -252,7 +252,7 @@ function GitHubStats({ username }) {
       </div>
 
       {/* Contribution Graph */}
-      <div className="bg-base-100 rounded-lg p-6 mb-6">
+      <div className="bg-white rounded-lg p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4 text-xs text-neutral/60">
             <span>Contributions: <span className="font-semibold text-neutral">{stats.contributionsFromGraph || stats.totalContributions}</span></span>
@@ -260,7 +260,7 @@ function GitHubStats({ username }) {
             <span>Current Streak: <span className="font-semibold text-neutral">{currentStreak}</span></span>
           </div>
           <div className="flex items-center gap-4">
-            <select className="text-xs bg-white border border-base-300 rounded px-2 py-1">
+            <select className="text-xs bg-white border border-gray-300 rounded px-2 py-1">
               <option>Current</option>
             </select>
             <div className="flex gap-1">
@@ -318,7 +318,7 @@ function GitHubStats({ username }) {
       {/* Bottom Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Languages */}
-        <div className="bg-base-100 rounded-lg p-6">
+        <div className="bg-white rounded-lg p-6">
           <h3 className="text-base font-semibold text-neutral mb-4">Languages</h3>
           
           {/* Language Bar */}
@@ -350,7 +350,7 @@ function GitHubStats({ username }) {
         </div>
 
         {/* Stats */}
-        <div className="bg-base-100 rounded-lg p-6">
+        <div className="bg-white rounded-lg p-6">
           <h3 className="text-base font-semibold text-neutral mb-4">Stats</h3>
           
           <div className="space-y-3">

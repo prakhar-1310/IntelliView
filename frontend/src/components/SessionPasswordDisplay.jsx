@@ -14,8 +14,7 @@ function SessionPasswordDisplay({ sessions, isLoading }) {
   if (isLoading || sessions.length === 0) return null;
 
   return (
-    <div className="card bg-base-100 border-2 border-warning/20 hover:border-warning/30">
-      <div className="card-body">
+    <div className="border-2 border-orange-200 bg-white rounded-lg p-6 hover:border-orange-300 transition-colors">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-gradient-to-br from-warning to-orange-500 rounded-xl">
             <KeyIcon className="size-5 text-white" />
@@ -25,26 +24,25 @@ function SessionPasswordDisplay({ sessions, isLoading }) {
 
         <div className="space-y-3 max-h-[300px] overflow-y-auto">
           {sessions.map((session) => (
-            <div key={session._id} className="card bg-base-200 border border-base-300">
-              <div className="card-body p-4">
+            <div key={session._id} className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-semibold truncate">{session.problem}</h3>
-                      <span className={`badge badge-sm ${getDifficultyBadgeClass(session.difficulty)}`}>
+                      <span className={`px-2 py-1 text-xs rounded-full font-medium ${getDifficultyBadgeClass(session.difficulty)}`}>
                         {session.difficulty}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-sm opacity-70">Password:</span>
-                      <code className="bg-base-300 px-2 py-1 rounded text-lg font-mono font-bold">
+                      <code className="bg-gray-200 px-2 py-1 rounded text-lg font-mono font-bold">
                         {session.password}
                       </code>
                     </div>
                   </div>
                   <button
                     onClick={() => copyToClipboard(session.password, session._id)}
-                    className="btn btn-sm btn-ghost"
+                    className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
                     title="Copy password"
                   >
                     {copiedId === session._id ? (
@@ -54,11 +52,9 @@ function SessionPasswordDisplay({ sessions, isLoading }) {
                     )}
                   </button>
                 </div>
-              </div>
             </div>
           ))}
         </div>
-      </div>
     </div>
   );
 }

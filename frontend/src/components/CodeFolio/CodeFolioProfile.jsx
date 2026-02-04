@@ -6,7 +6,7 @@ function CodeFolioProfile({ user, usernames, stats, onOpenCard }) {
   const [isProblemSolvingOpen, setIsProblemSolvingOpen] = useState(true);
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-base-300 overflow-hidden">
+    <div className="bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden">
       {/* Profile Header */}
       <div className="relative">
         <div className="h-20 bg-linear-to-r from-primary to-secondary"></div>
@@ -70,7 +70,7 @@ function CodeFolioProfile({ user, usernames, stats, onOpenCard }) {
           <div className="mb-6">
             <button 
               onClick={() => setIsProblemSolvingOpen(!isProblemSolvingOpen)}
-              className="w-full flex items-center justify-between p-3 bg-base-100 rounded-lg hover:bg-base-200 transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors"
             >
               <span className="text-sm font-semibold text-neutral">Problem Solving Stats</span>
               <span className={`text-neutral/60 transition-transform ${isProblemSolvingOpen ? 'rotate-180' : ''}`}>▼</span>
