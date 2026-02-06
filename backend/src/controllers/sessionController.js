@@ -162,8 +162,10 @@ export async function joinSession(req, res) {
       return res.status(400).json({ message: "Host cannot join their own session as participant" });
     }
 
-    // check if session is already full - has a participant
-    if (session.participant) return res.status(409).json({ message: "Session is full" });
+    // check if session is already full - has a different participant
+    if (session.participant && session.participant.toString() !== userId.toString()) {
+      return res.status(409).json({ message: "Session is full" });
+    }
 
     session.participant = userId;
     await session.save();
@@ -196,8 +198,10 @@ export async function joinSessionByCode(req, res) {
       return res.status(400).json({ message: "Host cannot join their own session as participant" });
     }
 
-    // check if session is already full - has a participant
-    if (session.participant) return res.status(409).json({ message: "Session is full" });
+    // check if session is already full - has a different participant
+    if (session.participant && session.participant.toString() !== userId.toString()) {
+      return res.status(409).json({ message: "Session is full" });
+    }
 
     session.participant = userId;
     await session.save();
@@ -208,6 +212,38 @@ export async function joinSessionByCode(req, res) {
     res.status(200).json({ session });
   } catch (error) {
     console.log("Error in joinSessionByCode controller:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+export async function leaveSession(req, res) {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id;
+
+    const session = await Session.findById(id);
+    if (!session) return res.status(404).json({ message: "Session not found" });
+
+    // Only allow participant to leave, not the host
+    if (!session.participant || session.participant.toString() !== userId.toString()) {
+      return res.status(403).json({ message: "You are not a participant in this session" });
+    }
+
+    // Remove participant from session
+    session.participant = null;
+    await session.save();
+
+    // Remove from chat channel
+    try {
+      const channel = chatClient.channel("messaging", session.callId);
+      await channel.removeMembers([req.user.clerkId]);
+    } catch (err) {
+      // Ignore chat removal errors
+    }
+
+    res.status(200).json({ session, message: "Left session successfully" });
+  } catch (error) {
+    console.log("Error in leaveSession controller:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 }

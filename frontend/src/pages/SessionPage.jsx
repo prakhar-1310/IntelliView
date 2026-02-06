@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { useEndSession, useJoinSession, useSessionById } from "../hooks/useSessions";
+import { useEndSession, useJoinSession, useSessionById, useLeaveSession } from "../hooks/useSessions";
 import { PROBLEMS } from "../data/problems";
 import { executeCode } from "../lib/piston";
 import Navbar from "../components/Navbar";
@@ -38,6 +38,7 @@ function SessionPage() {
 
   const joinSessionMutation = useJoinSession();
   const endSessionMutation = useEndSession();
+  const leaveSessionMutation = useLeaveSession();
 
   const session = sessionData?.session;
   const isHost = session?.host?.clerkId === user?.id;
@@ -238,6 +239,12 @@ function SessionPage() {
     }
   };
 
+  const handleLeaveSession = () => {
+    if (confirm("Are you sure you want to leave this session?")) {
+      leaveSessionMutation.mutate(id, { onSuccess: () => navigate("/dashboard") });
+    }
+  };
+
   const handleCopySessionCode = () => {
     if (session?.sessionCode) {
       navigator.clipboard.writeText(session.sessionCode);
@@ -325,6 +332,20 @@ function SessionPage() {
                               <LogOutIcon className="w-4 h-4" />
                             )}
                             End Session
+                          </button>
+                        )}
+                        {isParticipant && session?.status === "active" && (
+                          <button
+                            onClick={handleLeaveSession}
+                            disabled={leaveSessionMutation.isPending}
+                            className="px-3 py-1.5 bg-red-500 text-white hover:bg-red-600 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {leaveSessionMutation.isPending ? (
+                              <Loader2Icon className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <LogOutIcon className="w-4 h-4" />
+                            )}
+                            Leave Session
                           </button>
                         )}
                         {session?.status === "completed" && (
