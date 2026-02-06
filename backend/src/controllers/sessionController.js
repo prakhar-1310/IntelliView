@@ -1,9 +1,27 @@
 import { chatClient, streamClient } from "../lib/stream.js";
 import Session from "../models/Session.js";
 
-// Generate random 6-digit password
-function generateSessionPassword() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+// Generate unique 8-character session code
+function generateSessionCode() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code = "";
+  for (let i = 0; i < 8; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+// Ensure session code is unique
+async function getUniqueSessionCode() {
+  let code = generateSessionCode();
+  let existingCode = await Session.findOne({ sessionCode: code });
+  
+  while (existingCode) {
+    code = generateSessionCode();
+    existingCode = await Session.findOne({ sessionCode: code });
+  }
+  
+  return code;
 }
 
 export async function createSession(req, res) {
@@ -30,10 +48,10 @@ export async function createSession(req, res) {
 
     // generate a unique call id for stream video
     const callId = `session_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-    const password = generateSessionPassword();
+    const sessionCode = await getUniqueSessionCode();
 
     // create session in db
-    const session = await Session.create({ problem, difficulty, host: userId, callId, password });
+    const session = await Session.create({ problem, difficulty, host: userId, callId, sessionCode });
 
     // create stream video call
     await streamClient.video.call("default", callId).getOrCreate({
@@ -61,15 +79,31 @@ export async function createSession(req, res) {
 
 export async function getActiveSessions(_, res) {
   try {
-    const sessions = await Session.find({ status: "active" })
-      .populate("host", "name profileImage email clerkId")
+    // Return only the count of active sessions, not the full list
+    const count = await Session.countDocuments({ status: "active" });
+
+    res.status(200).json({ count, sessions: [] });
+  } catch (error) {
+    console.log("Error in getActiveSessions controller:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+export async function getMyActiveSessions(req, res) {
+  try {
+    const userId = req.user._id;
+
+    // get active sessions where user is the host
+    const sessions = await Session.find({
+      host: userId,
+      status: "active",
+    })
       .populate("participant", "name profileImage email clerkId")
-      .sort({ createdAt: -1 })
-      .limit(20);
+      .sort({ createdAt: -1 });
 
     res.status(200).json({ sessions });
   } catch (error) {
-    console.log("Error in getActiveSessions controller:", error.message);
+    console.log("Error in getMyActiveSessions controller:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
@@ -113,7 +147,6 @@ export async function getSessionById(req, res) {
 export async function joinSession(req, res) {
   try {
     const { id } = req.params;
-    const { password } = req.body;
     const userId = req.user._id;
     const clerkId = req.user.clerkId;
 
@@ -129,9 +162,38 @@ export async function joinSession(req, res) {
       return res.status(400).json({ message: "Host cannot join their own session as participant" });
     }
 
-    // Verify password
-    if (session.password !== password) {
-      return res.status(401).json({ message: "Invalid session password" });
+    // check if session is already full - has a participant
+    if (session.participant) return res.status(409).json({ message: "Session is full" });
+
+    session.participant = userId;
+    await session.save();
+
+    const channel = chatClient.channel("messaging", session.callId);
+    await channel.addMembers([clerkId]);
+
+    res.status(200).json({ session });
+  } catch (error) {
+    console.log("Error in joinSession controller:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+export async function joinSessionByCode(req, res) {
+  try {
+    const { code } = req.params;
+    const userId = req.user._id;
+    const clerkId = req.user.clerkId;
+
+    const session = await Session.findOne({ sessionCode: code });
+
+    if (!session) return res.status(404).json({ message: "Session not found. Invalid code." });
+
+    if (session.status !== "active") {
+      return res.status(400).json({ message: "Cannot join a completed session" });
+    }
+
+    if (session.host.toString() === userId.toString()) {
+      return res.status(400).json({ message: "Host cannot join their own session as participant" });
     }
 
     // check if session is already full - has a participant
@@ -145,7 +207,7 @@ export async function joinSession(req, res) {
 
     res.status(200).json({ session });
   } catch (error) {
-    console.log("Error in joinSession controller:", error.message);
+    console.log("Error in joinSessionByCode controller:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
 }

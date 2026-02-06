@@ -7,7 +7,7 @@ import { executeCode } from "../lib/piston";
 import Navbar from "../components/Navbar";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { getDifficultyBadgeClass } from "../lib/utils";
-import { Loader2Icon, LogOutIcon, PhoneOffIcon } from "lucide-react";
+import { Loader2Icon, LogOutIcon, PhoneOffIcon, ShareIcon, CheckIcon } from "lucide-react";
 import CodeEditorPanel from "../components/CodeEditorPanel";
 import OutputPanel from "../components/OutputPanel";
 import { useQuery } from "@tanstack/react-query";
@@ -26,6 +26,7 @@ function SessionPage() {
   const [isAccepted, setIsAccepted] = useState(false);
   const [allProblems, setAllProblems] = useState([]);
   const [problemData, setProblemData] = useState(null);
+  const [copiedCode, setCopiedCode] = useState(false);
 
   const { data: sessionData, isLoading: loadingSession, refetch } = useSessionById(id);
 
@@ -237,6 +238,14 @@ function SessionPage() {
     }
   };
 
+  const handleCopySessionCode = () => {
+    if (session?.sessionCode) {
+      navigator.clipboard.writeText(session.sessionCode);
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2000);
+    }
+  };
+
   return (
     <div className="h-screen bg-white flex flex-col">
       <Navbar />
@@ -268,11 +277,6 @@ function SessionPage() {
                         <p className="text-gray-900/60 mt-2">
                           Host: {session?.host?.name || "Loading..."} •{" "}
                           {session?.participant ? 2 : 1}/2 participants
-                          {session?.password && (
-                            <span className="ml-3">
-                              • Password: <code className="bg-gray-200 px-2 py-1 rounded font-mono font-bold">{session.password}</code>
-                            </span>
-                          )}
                         </p>
                       </div>
 
@@ -290,6 +294,25 @@ function SessionPage() {
                           {session?.difficulty.slice(0, 1).toUpperCase() +
                             session?.difficulty.slice(1) || "Easy"}
                         </span>
+                        {isHost && session?.status === "active" && (
+                          <button
+                            onClick={handleCopySessionCode}
+                            title="Copy session code to share"
+                            className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors text-sm font-medium flex items-center gap-2"
+                          >
+                            {copiedCode ? (
+                              <>
+                                <CheckIcon className="w-4 h-4" />
+                                Copied
+                              </>
+                            ) : (
+                              <>
+                                <ShareIcon className="w-4 h-4" />
+                                {session?.sessionCode}
+                              </>
+                            )}
+                          </button>
+                        )}
                         {isHost && session?.status === "active" && (
                           <button
                             onClick={handleEndSession}

@@ -22,6 +22,15 @@ export const useActiveSessions = () => {
   return result;
 };
 
+export const useMyActiveSessions = () => {
+  const result = useQuery({
+    queryKey: ["myActiveSessions"],
+    queryFn: sessionApi.getMyActiveSessions,
+  });
+
+  return result;
+};
+
 export const useMyRecentSessions = () => {
   const result = useQuery({
     queryKey: ["myRecentSessions"],
@@ -46,6 +55,17 @@ export const useJoinSession = () => {
   const result = useMutation({
     mutationKey: ["joinSession"],
     mutationFn: sessionApi.joinSession,
+    onSuccess: () => toast.success("Joined session successfully!"),
+    onError: (error) => toast.error(error.response?.data?.message || "Failed to join session"),
+  });
+
+  return result;
+};
+
+export const useJoinSessionByCode = () => {
+  const result = useMutation({
+    mutationKey: ["joinSessionByCode"],
+    mutationFn: (data) => sessionApi.joinSessionByCode(data.code),
     onSuccess: () => toast.success("Joined session successfully!"),
     onError: (error) => toast.error(error.response?.data?.message || "Failed to join session"),
   });

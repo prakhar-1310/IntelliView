@@ -31,10 +31,12 @@ const sessionSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    // session password for joining
-    password: {
+    // unique session code for joining
+    sessionCode: {
       type: String,
+      unique: true,
       required: true,
+      index: true,
     },
   },
   { timestamps: true }

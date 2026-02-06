@@ -10,6 +10,10 @@ export const sessionApi = {
     const response = await axiosInstance.get("/sessions/active");
     return response.data;
   },
+  getMyActiveSessions: async () => {
+    const response = await axiosInstance.get("/sessions/my-active");
+    return response.data;
+  },
   getMyRecentSessions: async () => {
     const response = await axiosInstance.get("/sessions/my-recent");
     return response.data;
@@ -20,8 +24,12 @@ export const sessionApi = {
     return response.data;
   },
 
-  joinSession: async ({ sessionId, password }) => {
-    const response = await axiosInstance.post(`/sessions/${sessionId}/join`, { password });
+  joinSession: async (sessionId) => {
+    const response = await axiosInstance.post(`/sessions/${sessionId}/join`);
+    return response.data;
+  },
+  joinSessionByCode: async (code) => {
+    const response = await axiosInstance.post(`/sessions/join/code/${code}`);
     return response.data;
   },
   endSession: async (id) => {
