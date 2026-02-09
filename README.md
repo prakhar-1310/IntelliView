@@ -12,7 +12,7 @@
 ---
 
 ## 🏠 Home Page
-![IntelliView Home Page](https://github.com/user-attachments/assets/c9c7e652-fb70-4ce7-a826-866b66dd0db8)
+![IntelliView Home Page](https://github.com/user-attachments/assets/7ad71a68-a837-4121-8eb4-0a28180f1834)
 
 ---
 
@@ -22,7 +22,7 @@
 ---
 
 ## 📊 Dashboard
-![Dashboard](https://github.com/user-attachments/assets/daa5b0de-fb22-4a50-9b44-20627ea56911)
+![Dashboard](https://github.com/user-attachments/assets/cf67f678-68c8-4230-8783-063a1603d13b)
 
 ---
 
