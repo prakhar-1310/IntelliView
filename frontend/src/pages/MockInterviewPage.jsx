@@ -229,6 +229,7 @@ function MockInterviewPage() {
   const [currentQIndex, setCurrentQIndex]       = useState(0);
   const [answers, setAnswers]                   = useState([]);
   const [currentAnswer, setCurrentAnswer]       = useState("");
+  const [manualText, setManualText]             = useState("");
   const [isListening, setIsListening]           = useState(false);
   const [isSpeaking, setIsSpeaking]             = useState(false);
   const [voiceEnabled, setVoiceEnabled]         = useState(true);
@@ -261,6 +262,12 @@ function MockInterviewPage() {
   const recognitionRef  = useRef(null);
   const voicesRef       = useRef([]);
   const customInputRef  = useRef(null);
+  const currentAnswerRef = useRef("");
+  const isIntentionallyStopped = useRef(true);
+
+  useEffect(() => {
+    currentAnswerRef.current = currentAnswer;
+  }, [currentAnswer]);
 
   useEffect(() => {
     const load = () => { voicesRef.current = window.speechSynthesis?.getVoices() || []; };
@@ -285,6 +292,7 @@ function MockInterviewPage() {
   }, [voiceEnabled]);
 
   const stopListening = useCallback(() => {
+    isIntentionallyStopped.current = true;
     if (recognitionRef.current) {
       try { recognitionRef.current.stop(); } catch (_) {}
       recognitionRef.current = null;
@@ -294,21 +302,61 @@ function MockInterviewPage() {
 
   const startListening = useCallback(() => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { toast.error("Speech recognition not supported. Please type your answer."); return; }
-    stopListening();
+    if (!SR) {
+      toast.error("Speech recognition not supported in this browser. Please type.");
+      return;
+    }
+    
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch (_) {}
+    }
+    
+    isIntentionallyStopped.current = false;
+    const baseText = currentAnswerRef.current;
+    
     const r = new SR();
-    r.continuous = true; r.interimResults = true; r.lang = "en-US";
+    r.continuous = true; 
+    r.interimResults = true; 
+    r.lang = "en-US";
+    
     r.onresult = (e) => {
-      let t = "";
-      for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
-      setCurrentAnswer(t);
+      let fullSpoken = "";
+      for (let i = 0; i < e.results.length; i++) {
+        fullSpoken += e.results[i][0].transcript;
+      }
+      
+      const newAnswer = baseText ? `${baseText} ${fullSpoken}`.trim() : fullSpoken;
+      setCurrentAnswer(newAnswer);
     };
-    r.onerror = (e) => { if (e.error !== "aborted") toast.error("Mic error: " + e.error); setIsListening(false); };
-    r.onend = () => setIsListening(false);
+    
+    r.onerror = (e) => {
+      console.error("Speech API Error:", e.error);
+      if (e.error === "network") {
+        toast.error("Browser speech engine network error. Try Chrome/Edge or check connection.");
+        isIntentionallyStopped.current = true;
+      } else if (e.error !== "aborted" && e.error !== "no-speech") {
+        toast.error("Mic error: " + e.error);
+        isIntentionallyStopped.current = true;
+      }
+    };
+    
+    r.onend = () => {
+      if (!isIntentionallyStopped.current) {
+        startListening();
+      } else {
+        setIsListening(false);
+      }
+    };
+    
     recognitionRef.current = r;
-    r.start();
-    setIsListening(true);
-  }, [stopListening]);
+    try {
+      r.start();
+      setIsListening(true);
+    } catch (err) {
+      console.error(err);
+      setIsListening(false);
+    }
+  }, []);
 
   useEffect(() => {
     return () => { stopListening(); window.speechSynthesis?.cancel(); };
@@ -349,6 +397,7 @@ function MockInterviewPage() {
       setAnswers(new Array(data.questions.length).fill(""));
       setCurrentQIndex(0);
       setCurrentAnswer("");
+      setManualText("");
       setAnswerSubmitted(false);
       setStartTime(Date.now());
       setStage("interview");
@@ -370,6 +419,7 @@ function MockInterviewPage() {
     if (currentQIndex < questions.length - 1) {
       setCurrentQIndex((i) => i + 1);
       setCurrentAnswer("");
+      setManualText("");
       setAnswerSubmitted(false);
     } else {
       await handleEvaluate(updated);
@@ -471,6 +521,7 @@ function MockInterviewPage() {
     setAnswers([]);
     setCurrentQIndex(0);
     setCurrentAnswer("");
+    setManualText("");
     setIsListening(false);
     setIsSpeaking(false);
     setReport(null);
@@ -942,7 +993,7 @@ function MockInterviewPage() {
                   {currentAnswer && (
                     <div className="flex justify-between items-center mt-4 pt-4 border-t border-black/5">
                       <button
-                        onClick={() => { setCurrentAnswer(""); stopListening(); }}
+                        onClick={() => { setCurrentAnswer(""); setManualText(""); stopListening(); }}
                         className="text-xs font-medium text-black/40 hover:text-red-500 transition-colors uppercase tracking-wider"
                       >
                         Clear Answer
