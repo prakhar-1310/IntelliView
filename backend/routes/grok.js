@@ -61,4 +61,108 @@ router.post('/hint', async (req, res) => {
   }
 });
 
+// ── MOCK INTERVIEW: Question Generation ──────────────────────────────────────
+router.post('/interview/questions', async (req, res) => {
+  const { topic, difficulty, count } = req.body;
+  if (!topic || !difficulty || !count) {
+    return res.status(400).json({ error: 'Topic, difficulty, and count are required' });
+  }
+  if (!GROK_API_KEY) return res.status(500).json({ error: 'Grok API key not set' });
+
+  const prompt = `You are an expert technical interviewer. Generate exactly ${count} interview questions for a ${difficulty} level interview on the topic: "${topic}".
+
+Return ONLY a valid JSON array — no markdown, no extra text, no explanation. Use exactly this format:
+[
+  {
+    "id": 1,
+    "question": "Your interview question here?",
+    "idealAnswer": "A concise 2-3 sentence ideal answer covering the key concepts."
+  }
+]
+
+Rules:
+- Questions must match the ${difficulty} difficulty level
+- Focus specifically on: ${topic}
+- Make questions realistic and commonly asked in real tech interviews
+- idealAnswer should be clear, concise, and technically accurate (2-4 sentences)
+- Generate exactly ${count} questions, numbered 1 to ${count}`;
+
+  try {
+    const response = await axios.post(GROK_API_URL, {
+      model: 'openai/gpt-oss-120b',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 2500,
+      temperature: 0.7,
+    }, {
+      headers: { Authorization: `Bearer ${GROK_API_KEY}`, 'Content-Type': 'application/json' },
+    });
+
+    const content = response.data.choices?.[0]?.message?.content?.trim() || '';
+    // Strip any accidental markdown fences
+    const jsonStr = content.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+    const questions = JSON.parse(jsonStr);
+    res.json({ questions });
+  } catch (err) {
+    console.error('Interview question generation error:', err.response?.data || err.message);
+    res.status(500).json({ error: 'Failed to generate questions', details: err.response?.data || err.message });
+  }
+});
+
+// ── MOCK INTERVIEW: Answer Evaluation ────────────────────────────────────────
+router.post('/interview/evaluate', async (req, res) => {
+  const { topic, difficulty, questionsAndAnswers } = req.body;
+  // questionsAndAnswers: [{ id, question, idealAnswer, candidateAnswer }]
+  if (!topic || !difficulty || !Array.isArray(questionsAndAnswers) || questionsAndAnswers.length === 0) {
+    return res.status(400).json({ error: 'Invalid request data' });
+  }
+  if (!GROK_API_KEY) return res.status(500).json({ error: 'Grok API key not set' });
+
+  const qaFormatted = questionsAndAnswers.map((qa, i) =>
+    `Q${i + 1} (id: ${qa.id}): ${qa.question}\nCandidate's Answer: ${qa.candidateAnswer?.trim() || '(No answer provided)'}`
+  ).join('\n\n');
+
+  const prompt = `You are an expert technical interviewer evaluating a ${difficulty} level interview on: "${topic}".
+
+Interview Q&A:
+${qaFormatted}
+
+Evaluate each answer carefully and return ONLY valid JSON — no markdown, no extra text. Use exactly this structure:
+{
+  "overallScore": <integer 0-100>,
+  "grade": "<one of: A+, A, B+, B, C+, C, D, F>",
+  "summary": "<2-3 sentence overall assessment of the candidate's performance>",
+  "strengths": ["<specific strength 1>", "<specific strength 2>"],
+  "areasToImprove": ["<area 1>", "<area 2>", "<area 3>"],
+  "questionAnalysis": [
+    {
+      "questionId": <same id as the question>,
+      "score": <integer 0-10>,
+      "whatWasGood": "<what the candidate did well, or 'No answer was provided' if blank>",
+      "whatToImprove": "<specific, actionable improvement advice>",
+      "correctAnswer": "<comprehensive ideal answer for this question>",
+      "feedback": "<1-2 sentence overall verdict for this answer>"
+    }
+  ]
+}`;
+
+  try {
+    const response = await axios.post(GROK_API_URL, {
+      model: 'openai/gpt-oss-120b',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 3500,
+      temperature: 0.3,
+    }, {
+      headers: { Authorization: `Bearer ${GROK_API_KEY}`, 'Content-Type': 'application/json' },
+    });
+
+    const content = response.data.choices?.[0]?.message?.content?.trim() || '';
+    const jsonStr = content.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+    const evaluation = JSON.parse(jsonStr);
+    res.json({ evaluation });
+  } catch (err) {
+    console.error('Interview evaluation error:', err.response?.data || err.message);
+    res.status(500).json({ error: 'Failed to evaluate interview', details: err.response?.data || err.message });
+  }
+});
+
 export default router;
