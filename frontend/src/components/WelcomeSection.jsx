@@ -1,9 +1,11 @@
 
 import { useUser } from "@clerk/clerk-react";
 import { ArrowRightIcon, SparklesIcon, ZapIcon } from "lucide-react";
+import { useNavigate } from "react-router";
 
 function WelcomeSection({ onCreateSession, hasActiveSession }) {
   const { user } = useUser();
+  const navigate = useNavigate();
 
   return (
     <div className="relative overflow-hidden border-b border-black/5">
@@ -30,7 +32,7 @@ function WelcomeSection({ onCreateSession, hasActiveSession }) {
           <div className="text-right">
             <div className="flex gap-3">
               <button
-                onClick={() => {}}
+                onClick={() => navigate("/mock-interview")}
                 className="group px-8 py-4 bg-[#d4af37] text-white font-bold text-[10px] tracking-wider uppercase hover:bg-[#451a21] transition-all duration-300 shadow-lg"
               >
                 <div className="flex items-center gap-3">
