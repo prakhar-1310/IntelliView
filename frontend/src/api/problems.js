@@ -1,6 +1,11 @@
 import axiosInstance from "../lib/axios";
 
 export const problemApi = {
+  generateCustomProblem: async (topic, difficulty) => {
+    const response = await axiosInstance.post("/grok/problem/generate", { topic, difficulty });
+    return response.data;
+  },
+
   createProblem: async (data) => {
     const response = await axiosInstance.post("/problems", data);
     return response.data;

@@ -74,7 +74,7 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
       <div className="p-6 bg-white border-b border-gray-300">
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
-            <span className="px-3 py-1.5 bg-primary text-white rounded-full font-semibold text-sm">#{problem.id}</span>
+            <span className="px-3 py-1.5 bg-primary text-white rounded-full font-semibold text-sm">#{problem.sequenceNumber || problem.id}</span>
             <h1 className="text-3xl font-bold text-gray-900">{problem.title}</h1>
           </div>
           <div className="flex items-center gap-2">
@@ -183,7 +183,7 @@ function ProblemDescription({ problem, currentProblemId, onProblemChange, allPro
           >
             {allProblems.map((p) => (
               <option key={p.id} value={p.id}>
-                #{p.id} - {p.title} - {p.difficulty}
+                #{p.sequenceNumber || p.id} - {p.title} - {p.difficulty}
               </option>
             ))}
           </select>

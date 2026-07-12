@@ -16,7 +16,7 @@ import youtubeRoutes from "./routes/youtubeRoutes.js";
 import grokRoutes from "../routes/grok.js";
 import codefolioRoutes from "./routes/codefolioRoutes.js";
 import interviewRoutes from "./routes/interviewRoutes.js";
-
+import executeRoutes from "../routes/executeRoutes.js";
 
 const app = express();
 const __dirname = path.resolve();
@@ -35,6 +35,7 @@ app.use("/api/youtube", youtubeRoutes);
 app.use("/api/grok", grokRoutes);
 app.use("/api/codefolio", codefolioRoutes);
 app.use("/api/interview", interviewRoutes);
+app.use("/api/execute", executeRoutes);
 
 app.get("/msg", (req,res)=>{
     res.status(200).json({
