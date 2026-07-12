@@ -8,12 +8,12 @@ import crypto from "crypto";
 const router = express.Router();
 
 // Helper to execute commands with a timeout
-const runCommand = (command, timeout = 5000) => {
+const runCommand = (command, timeout = 15000) => {
   return new Promise((resolve) => {
     exec(command, { timeout }, (error, stdout, stderr) => {
       if (error) {
         if (error.killed) {
-          resolve({ success: false, error: "Execution Timed Out (5s limit exceeded)" });
+          resolve({ success: false, error: "Execution Timed Out (15s limit exceeded)" });
         } else {
           resolve({ success: false, error: stderr || error.message });
         }

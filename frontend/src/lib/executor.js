@@ -1,4 +1,4 @@
-import axiosInstance from "./axios";
+import axios from "axios";
 
 const LANGUAGE_VERSIONS = {
   python: { language: "python", version: "3.10.0" },
@@ -22,7 +22,7 @@ export async function executeCode(language, code) {
       };
     }
 
-    const response = await axiosInstance.post("/execute", {
+    const response = await axios.post("http://localhost:3000/api/execute", {
       language: languageConfig.language,
       version: languageConfig.version,
       files: [
