@@ -78,3 +78,14 @@
 .animate-mic-pulse    { animation: micPulse 1.4s ease-out infinite; }
 .animate-fade-slide   { animation: fadeSlideUp 0.4s ease-out forwards; }
 
+/* Override Stream Video SDK text colors which might inherit our dark body text */
+.str-video__participant-details,
+.str-video__name-label,
+.str-video__participant-view span,
+.str-video__notification,
+.str-video__notification *,
+.str-video__notification__message,
+div[class*="notification"] {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}

@@ -200,8 +200,8 @@ function ProblemsPage() {
                 {/* LEFT SIDE */}
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="size-12 rounded-lg bg-[#451a21]/10 flex items-center justify-center font-bold text-lg text-[#451a21]">
-                      #{problem.id}
+                    <div className="size-12 min-w-[3rem] shrink-0 rounded-lg bg-[#451a21]/10 flex items-center justify-center font-bold text-lg text-[#451a21]">
+                      #{problem.sequenceNumber}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">

@@ -29,6 +29,8 @@ import {
   XIcon,
   BarChart2Icon,
   MessageSquareIcon,
+  DownloadIcon,
+  CameraIcon,
 } from "lucide-react";
 
 // ─── Static Config ────────────────────────────────────────────────────────────
@@ -265,6 +267,17 @@ function MockInterviewPage() {
   const currentAnswerRef = useRef("");
   const isIntentionallyStopped = useRef(true);
 
+  // Video Recording Refs & State
+  const liveVideoRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const videoStreamRef = useRef(null);
+  const recordedChunksRef = useRef([]);
+  const [videoUrl, setVideoUrl] = useState(null);
+
+  // Frame Capture for AI Visual Analysis
+  const framesRef = useRef([]);
+  const frameIntervalRef = useRef(null);
+
   useEffect(() => {
     currentAnswerRef.current = currentAnswer;
   }, [currentAnswer]);
@@ -290,6 +303,47 @@ function MockInterviewPage() {
     u.onerror = () => setIsSpeaking(false);
     window.speechSynthesis.speak(u);
   }, [voiceEnabled]);
+
+  const startCameraAndRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      videoStreamRef.current = stream;
+      if (liveVideoRef.current) {
+        liveVideoRef.current.srcObject = stream;
+      }
+      
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+      mediaRecorderRef.current = mediaRecorder;
+      recordedChunksRef.current = [];
+      
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) {
+          recordedChunksRef.current.push(e.data);
+        }
+      };
+      
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        setVideoUrl(url);
+      };
+      
+      mediaRecorder.start();
+    } catch (err) {
+      console.error("Camera access denied or failed:", err);
+      toast.error("Camera access denied. Cannot record video.");
+    }
+  };
+
+  const stopCameraAndRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+    if (videoStreamRef.current) {
+      videoStreamRef.current.getTracks().forEach((track) => track.stop());
+      videoStreamRef.current = null;
+    }
+  };
 
   const stopListening = useCallback(() => {
     isIntentionallyStopped.current = true;
@@ -358,8 +412,38 @@ function MockInterviewPage() {
     }
   }, []);
 
+  const captureFrame = useCallback(() => {
+    if (liveVideoRef.current && framesRef.current.length < 5) {
+      const canvas = document.createElement("canvas");
+      canvas.width = liveVideoRef.current.videoWidth || 640;
+      canvas.height = liveVideoRef.current.videoHeight || 480;
+      const ctx = canvas.getContext("2d");
+      if (ctx && canvas.width > 0) {
+        ctx.drawImage(liveVideoRef.current, 0, 0, canvas.width, canvas.height);
+        const base64 = canvas.toDataURL("image/jpeg", 0.5);
+        if (base64.length > 50) {
+          framesRef.current.push(base64);
+        }
+      }
+    }
+  }, []);
+
   useEffect(() => {
-    return () => { stopListening(); window.speechSynthesis?.cancel(); };
+    if (stage === "interview") {
+      setTimeout(() => captureFrame(), 2000); // Initial frame
+      frameIntervalRef.current = setInterval(() => {
+        captureFrame();
+      }, 8000); // capture a frame every 8 seconds
+    } else {
+      if (frameIntervalRef.current) clearInterval(frameIntervalRef.current);
+    }
+    return () => {
+      if (frameIntervalRef.current) clearInterval(frameIntervalRef.current);
+    };
+  }, [stage, captureFrame]);
+
+  useEffect(() => {
+    return () => { stopListening(); window.speechSynthesis?.cancel(); stopCameraAndRecording(); };
   }, [stopListening]);
 
   useEffect(() => {
@@ -400,7 +484,9 @@ function MockInterviewPage() {
       setManualText("");
       setAnswerSubmitted(false);
       setStartTime(Date.now());
+      setVideoUrl(null);
       setStage("interview");
+      startCameraAndRecording();
     } catch (err) {
       console.error(err);
       toast.error("Failed to generate questions. Please try again.");
@@ -422,6 +508,7 @@ function MockInterviewPage() {
       setManualText("");
       setAnswerSubmitted(false);
     } else {
+      stopCameraAndRecording();
       await handleEvaluate(updated);
     }
   };
@@ -435,7 +522,12 @@ function MockInterviewPage() {
       candidateAnswer: finalAnswers[i] || "",
     }));
     try {
-      const data = await interviewApi.evaluateAnswers({ topic: topicObj.label, difficulty, questionsAndAnswers });
+      const data = await interviewApi.evaluateAnswers({
+        topic: topicObj.label,
+        difficulty,
+        questionsAndAnswers,
+        videoFrames: framesRef.current
+      });
       if (!data.evaluation) throw new Error("No evaluation returned");
       setReport(data.evaluation);
       setExpandedQ(0);
@@ -462,6 +554,7 @@ function MockInterviewPage() {
 
   const handleEndEarly = async () => {
     stopListening();
+    stopCameraAndRecording();
     window.speechSynthesis?.cancel();
     
     if (currentQIndex === 0 && !currentAnswer.trim()) {
@@ -510,6 +603,7 @@ function MockInterviewPage() {
 
   const handleReset = () => {
     stopListening();
+    stopCameraAndRecording();
     window.speechSynthesis?.cancel();
     setStage("setup");
     setSelectedTopic(null);
@@ -527,6 +621,9 @@ function MockInterviewPage() {
     setReport(null);
     setExpandedQ(0);
     setSavedId(null);
+    setVideoUrl(null);
+    recordedChunksRef.current = [];
+    framesRef.current = [];
   };
 
   const currentQuestion = questions[currentQIndex];
@@ -961,33 +1058,63 @@ function MockInterviewPage() {
 
               {/* RIGHT: Answer Column */}
               <div className="flex flex-col gap-4 overflow-y-auto pb-4 scrollbar-thin">
-                {/* Answer card */}
-                <div className="bg-white border border-[#451a21]/10 shadow-sm p-6 flex-1 flex flex-col">
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="flex items-center gap-3">
-                      <div className="size-10 bg-[#451a21]/5 text-[#451a21] rounded flex items-center justify-center">
-                        <MessageSquareIcon className="size-5" />
+                
+                {/* Combined Answer & Camera card */}
+                <div className="bg-white border border-[#451a21]/10 shadow-sm p-6 flex-1 flex flex-col min-h-0">
+                  <div className="flex items-start justify-between mb-5 gap-4">
+                    {/* Left: Title & Mic */}
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="size-10 bg-[#451a21]/5 text-[#451a21] rounded flex items-center justify-center shrink-0">
+                          <MessageSquareIcon className="size-5" />
+                        </div>
+                        <span className="text-lg font-serif font-light text-[#451a21]">Your Answer</span>
                       </div>
-                      <span className="text-lg font-serif font-light text-[#451a21]">Your Answer</span>
+                      <button
+                        onClick={() => (isListening ? stopListening() : startListening())}
+                        className={`flex items-center w-max gap-2 px-5 py-2.5 font-bold text-[10px] tracking-widest uppercase transition-all duration-200 rounded ${
+                          isListening
+                            ? "bg-[#d4af37] text-white shadow-md animate-mic-pulse scale-105"
+                            : "bg-white border border-[#451a21]/20 text-[#451a21] hover:bg-[#451a21]/5 hover:border-[#451a21]/40 shadow-sm"
+                        }`}
+                      >
+                        {isListening ? <MicIcon className="size-4" /> : <MicOffIcon className="size-4" />}
+                        {isListening ? "Listening…" : "Use Mic"}
+                      </button>
                     </div>
-                    <button
-                      onClick={() => (isListening ? stopListening() : startListening())}
-                      className={`flex items-center gap-2 px-5 py-2.5 font-bold text-[10px] tracking-widest uppercase transition-all duration-200 rounded ${
-                        isListening
-                          ? "bg-[#d4af37] text-white shadow-md animate-mic-pulse scale-105"
-                          : "bg-white border border-[#451a21]/20 text-[#451a21] hover:bg-[#451a21]/5 hover:border-[#451a21]/40 shadow-sm"
-                      }`}
-                    >
-                      {isListening ? <MicIcon className="size-4" /> : <MicOffIcon className="size-4" />}
-                      {isListening ? "Listening…" : "Use Mic"}
-                    </button>
+
+                    {/* Right: Compact Camera */}
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <div className="flex items-center justify-between w-full px-1">
+                        <span className="text-[9px] font-bold tracking-widest uppercase text-[#451a21]/50">Camera</span>
+                        {videoStreamRef.current && (
+                          <div className="flex items-center gap-1.5">
+                            <div className="size-1.5 bg-red-500 rounded-full animate-pulse" />
+                            <span className="text-[9px] font-bold tracking-wider uppercase text-red-500">Rec</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="relative w-36 md:w-48 aspect-video rounded-sm overflow-hidden bg-[#fdfcfb] border border-black/10 shadow-inner">
+                        <video
+                          ref={liveVideoRef}
+                          autoPlay
+                          muted
+                          className="w-full h-full object-cover transform -scale-x-100"
+                        />
+                        {!videoStreamRef.current && (
+                          <div className="absolute inset-0 flex items-center justify-center text-black/30 text-[9px] uppercase tracking-wider font-bold">
+                            Starting…
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
                   <textarea
                     value={currentAnswer}
                     onChange={(e) => setCurrentAnswer(e.target.value)}
                     placeholder="Speak using the mic, or type your answer here…"
-                    className="w-full flex-1 bg-[#fdfcfb] border border-black/10 px-5 py-4 text-black/80 placeholder-black/30 resize-none outline-none focus:border-[#451a21]/40 focus:bg-white text-base leading-relaxed transition-all shadow-inner rounded-sm"
+                    className="w-full flex-1 bg-[#fdfcfb] border border-black/10 px-5 py-4 text-black/80 placeholder-black/30 resize-none outline-none focus:border-[#451a21]/40 focus:bg-white text-base leading-relaxed transition-all shadow-inner rounded-sm min-h-[120px]"
                   />
 
                   {currentAnswer && (
@@ -1193,6 +1320,66 @@ function MockInterviewPage() {
                 </ul>
               </div>
             </div>
+
+            {/* Video Recording Section */}
+            {videoUrl && (
+              <div className="bg-white border border-[#451a21]/10 shadow-sm p-6 mb-8 flex flex-col gap-5">
+                <div className="flex items-center gap-3 w-full">
+                  <div className="size-8 bg-[#451a21] rounded-full flex items-center justify-center shrink-0">
+                    <span className="text-white text-xs">🎥</span>
+                  </div>
+                  <h3 className="text-xl font-serif font-light text-[#451a21]">Your Interview Recording</h3>
+                </div>
+                
+                <div className="flex flex-col md:flex-row items-center md:items-start gap-8 bg-[#fdfcfb] p-5 rounded-sm border border-black/5">
+                  <video src={videoUrl} controls className="w-full md:w-80 aspect-video rounded border border-black/10 shadow-sm bg-black object-contain shrink-0" />
+                  <div className="flex flex-col gap-4 py-2">
+                    <p className="text-sm text-black/60 font-light leading-relaxed">
+                      Review your interview recording to evaluate your body language, tone, and pacing. 
+                      You can download this video for your personal records.
+                    </p>
+                    <a
+                      href={videoUrl}
+                      download="mock_interview_recording.webm"
+                      className="flex items-center justify-center gap-3 px-6 py-3.5 bg-[#d4af37] text-white font-bold text-[10px] tracking-wider uppercase hover:bg-[#451a21] transition-all duration-300 shadow-sm w-max mt-2"
+                    >
+                      <DownloadIcon className="size-4" />
+                      Download Recording
+                    </a>
+                  </div>
+                </div>
+
+                {report.visualAnalysis && (
+                  <div className="w-full bg-white border border-[#451a21]/10 rounded-sm shadow-sm p-6 mt-2">
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="size-8 bg-[#451a21] rounded-full flex items-center justify-center shrink-0">
+                        <CameraIcon className="size-4 text-white" />
+                      </div>
+                      <h4 className="font-serif text-[#451a21] text-xl font-light">AI Visual Analysis</h4>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div className="bg-[#fdfcfb] p-4 border border-black/5 rounded-sm flex flex-col gap-1.5 shadow-sm">
+                        <span className="text-[10px] uppercase font-bold text-black/40 tracking-wider">Nervousness</span>
+                        <span className="text-base font-medium text-[#451a21]">{report.visualAnalysis.nervousness || "N/A"}</span>
+                      </div>
+                      <div className="bg-[#fdfcfb] p-4 border border-black/5 rounded-sm flex flex-col gap-1.5 shadow-sm">
+                        <span className="text-[10px] uppercase font-bold text-black/40 tracking-wider">Eye Contact</span>
+                        <span className="text-base font-medium text-[#451a21]">{report.visualAnalysis.eyeContact || "N/A"}</span>
+                      </div>
+                      <div className="bg-[#fdfcfb] p-4 border border-black/5 rounded-sm flex flex-col gap-1.5 shadow-sm">
+                        <span className="text-[10px] uppercase font-bold text-black/40 tracking-wider">Attire</span>
+                        <span className="text-base font-medium text-[#451a21]">{report.visualAnalysis.attire || "N/A"}</span>
+                      </div>
+                    </div>
+                    <div className="bg-black/5 p-4 rounded-sm border-l-4 border-[#d4af37]">
+                      <p className="text-sm text-black/70 leading-relaxed italic">
+                        "{report.visualAnalysis.feedback}"
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Question breakdown */}
             <div className="mb-8">

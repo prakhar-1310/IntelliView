@@ -1,6 +1,7 @@
 // backend/routes/grok.js (ESM version)
 import express from 'express';
 import axios from 'axios';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 const router = express.Router();
 
 // Load Grok API key from environment
@@ -61,6 +62,79 @@ router.post('/hint', async (req, res) => {
   }
 });
 
+// ── CUSTOM PROBLEM GENERATION ────────────────────────────────────────────────
+router.post('/problem/generate', async (req, res) => {
+  const { topic, difficulty } = req.body;
+  if (!topic || !difficulty) return res.status(400).json({ error: 'Topic and difficulty are required' });
+  if (!GROK_API_KEY) return res.status(500).json({ error: 'Grok API key not set' });
+
+  const prompt = `You are an expert technical interviewer and software engineer.
+Generate a complete coding interview problem based on the topic: "${topic}" and difficulty: "${difficulty}".
+
+Return ONLY a valid JSON object. Do NOT include markdown blocks or any other text.
+The JSON object must perfectly match this structure (use real problem content):
+{
+  "id": "a-unique-kebab-case-id-for-this-problem",
+  "title": "A catchy title for the problem",
+  "difficulty": "${difficulty}",
+  "category": "${topic}",
+  "description": {
+    "text": "The full HTML or plaintext description of the problem.",
+    "notes": ["Any additional notes or edge cases to consider."]
+  },
+  "examples": [
+    {
+      "input": "Example input",
+      "output": "Example output",
+      "explanation": "Example explanation"
+    }
+  "constraints": ["Constraint 1", "Constraint 2"],
+  "starterCode": {
+    "python": "def solve(nums):\\n    pass\\n\\nif __name__ == '__main__':\\n    # You can add test cases here\\n    print(solve([1, 2, 3]))",
+    "java": "class Solution {\\n    public void solve() {\\n        // Implement solution here\\n    }\\n}\\n\\npublic class Main {\\n    public static void main(String[] args) {\\n        Solution sol = new Solution();\\n        // You can add test cases here\\n        sol.solve();\\n    }\\n}",
+    "cpp": "#include <iostream>\\nusing namespace std;\\n\\nclass Solution {\\npublic:\\n    void solve() {\\n        // Implement solution here\\n    }\\n};\\n\\nint main() {\\n    Solution sol;\\n    // You can add test cases here\\n    sol.solve();\\n    return 0;\\n}"
+  },
+  "expectedOutput": {
+    "python": "Expected output from python execution if we ran print statements",
+    "java": "Expected output from java execution",
+    "cpp": "Expected output from cpp execution"
+  }
+}`;
+
+  try {
+    const response = await axios.post(
+      GROK_API_URL,
+      {
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 4000,
+        temperature: 0.7,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${GROK_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    const content = response.data.choices?.[0]?.message?.content?.trim() || '';
+    const jsonStr = content.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+
+    try {
+      const generatedProblem = JSON.parse(jsonStr);
+      res.json({ problem: generatedProblem });
+    } catch (parseErr) {
+      console.error('Failed to parse Groq generated problem:', jsonStr);
+      res.status(500).json({ error: 'Groq API returned invalid JSON', details: jsonStr });
+    }
+  } catch (err) {
+    console.error('Groq API error generating problem:', err?.response?.data || err.message);
+    res.status(500).json({ error: 'Failed to generate problem', details: err?.response?.data || err.message });
+  }
+});
+
+
 // ── MOCK INTERVIEW: Question Generation ──────────────────────────────────────
 router.post('/interview/questions', async (req, res) => {
   const { topic, difficulty, count } = req.body;
@@ -110,7 +184,7 @@ Rules:
 
 // ── MOCK INTERVIEW: Answer Evaluation ────────────────────────────────────────
 router.post('/interview/evaluate', async (req, res) => {
-  const { topic, difficulty, questionsAndAnswers } = req.body;
+  const { topic, difficulty, questionsAndAnswers, videoFrames } = req.body;
   // questionsAndAnswers: [{ id, question, idealAnswer, candidateAnswer }]
   if (!topic || !difficulty || !Array.isArray(questionsAndAnswers) || questionsAndAnswers.length === 0) {
     return res.status(400).json({ error: 'Invalid request data' });
@@ -146,7 +220,7 @@ Evaluate each answer carefully and return ONLY valid JSON — no markdown, no ex
 }`;
 
   try {
-    const response = await axios.post(GROK_API_URL, {
+    const groqPromise = axios.post(GROK_API_URL, {
       model: 'openai/gpt-oss-120b',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 3500,
@@ -155,9 +229,48 @@ Evaluate each answer carefully and return ONLY valid JSON — no markdown, no ex
       headers: { Authorization: `Bearer ${GROK_API_KEY}`, 'Content-Type': 'application/json' },
     });
 
+    let geminiPromise = Promise.resolve(null);
+    if (videoFrames && videoFrames.length > 0 && process.env.GEMINI_API_KEY) {
+      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+      const imageParts = videoFrames.map(base64Str => {
+        const mimeType = base64Str.split(";")[0].split(":")[1] || "image/jpeg";
+        const data = base64Str.includes(",") ? base64Str.split(",")[1] : base64Str;
+        return { inlineData: { data, mimeType } };
+      });
+
+      const visualPrompt = `Analyze these frames of a candidate taken during a mock interview.
+Evaluate their body language and presentation based on these frames.
+Return exactly and ONLY a JSON object (no markdown, no extra text) with this structure:
+{
+  "nervousness": "Low", // Low, Medium, or High
+  "eyeContact": "Good", // Good, Fair, or Poor
+  "attire": "Formal", // Formal, Business Casual, Casual, or Inappropriate
+  "feedback": "2-3 sentence summary of their visual presentation."
+}`;
+
+      geminiPromise = model.generateContent([visualPrompt, ...imageParts])
+        .then(result => {
+          const text = result.response.text().replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+          return JSON.parse(text);
+        })
+        .catch(err => {
+          console.error("Gemini Visual Analysis Error:", err);
+          return null;
+        });
+    }
+
+    const [response, visualResult] = await Promise.all([groqPromise, geminiPromise]);
+
     const content = response.data.choices?.[0]?.message?.content?.trim() || '';
     const jsonStr = content.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
     const evaluation = JSON.parse(jsonStr);
+
+    if (visualResult) {
+      evaluation.visualAnalysis = visualResult;
+    }
+
     res.json({ evaluation });
   } catch (err) {
     console.error('Interview evaluation error:', err.response?.data || err.message);

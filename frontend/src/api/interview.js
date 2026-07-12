@@ -8,9 +8,9 @@ export const interviewApi = {
       .then((r) => r.data),
 
   // Evaluate all Q&A pairs and return full report
-  evaluateAnswers: ({ topic, difficulty, questionsAndAnswers }) =>
+  evaluateAnswers: ({ topic, difficulty, questionsAndAnswers, videoFrames }) =>
     axiosInstance
-      .post("/grok/interview/evaluate", { topic, difficulty, questionsAndAnswers })
+      .post("/grok/interview/evaluate", { topic, difficulty, questionsAndAnswers, videoFrames })
       .then((r) => r.data),
 
   // Save completed interview to MongoDB

@@ -4,7 +4,7 @@ export async function createProblem(req, res) {
   try {
     const userId = req.user._id;
     const problemData = { ...req.body, createdBy: userId };
-    
+
     const problem = await Problem.create(problemData);
     res.status(201).json({ problem });
   } catch (error) {

@@ -12,7 +12,7 @@ import { getHintFromGrok } from "../lib/grok";
 import { getMistakesAndCorrectionFromGrok } from "../lib/grok";
 import OutputPanel from "../components/OutputPanel";
 import CodeEditorPanel from "../components/CodeEditorPanel";
-import { executeCode } from "../lib/piston";
+import { executeCode } from "../lib/executor";
 
 import toast from "react-hot-toast";
 import confetti from "canvas-confetti";
@@ -203,11 +203,11 @@ function ProblemPage() {
           </div>
         </div>
       ) : (
-        <div className="flex-1">
+        <div className="flex-1 overflow-hidden">
         <PanelGroup direction="horizontal">
           {/* left panel- problem desc */}
           <Panel defaultSize={40} minSize={30}>
-            <div className="relative">
+            <div className="relative h-full">
               {/* Removed upper hint button, only header hint remains */}
               <ProblemDescription
                 problem={currentProblem}

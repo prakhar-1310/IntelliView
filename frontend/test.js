@@ -1,0 +1,1 @@
+fetch('http://localhost:3000/api/execute', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({language:'python', files:[{content:'print("hello")'}]})}).then(r=>r.json()).then(console.log)

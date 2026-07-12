@@ -44,6 +44,12 @@ const mockInterviewSchema = new mongoose.Schema(
     strengths: [String],
     areasToImprove: [String],
     questionAnalysis: [questionAnalysisSchema],
+    visualAnalysis: {
+      nervousness: { type: String },
+      eyeContact: { type: String },
+      attire: { type: String },
+      feedback: { type: String }
+    },
     durationMinutes: { type: Number },
   },
   { timestamps: true }
