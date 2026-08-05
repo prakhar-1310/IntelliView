@@ -284,3 +284,57 @@ export async function endSession(req, res) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
+export async function getAdminActiveSessions(req, res) {
+  try {
+    const sessions = await Session.find({ status: "active" })
+      .populate("host", "name email profileImage clerkId")
+      .populate("participant", "name email profileImage clerkId")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ count: sessions.length, sessions });
+  } catch (error) {
+    console.log("Error in getAdminActiveSessions controller:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+export async function cancelSessionAdmin(req, res) {
+  try {
+    const { id } = req.params;
+
+    const session = await Session.findById(id)
+      .populate("host", "name email profileImage clerkId")
+      .populate("participant", "name email profileImage clerkId");
+
+    if (!session) return res.status(404).json({ message: "Session not found" });
+
+    if (session.status === "completed") {
+      return res.status(400).json({ message: "Session is already completed" });
+    }
+
+    // delete stream video call
+    try {
+      const call = streamClient.video.call("default", session.callId);
+      await call.delete({ hard: true });
+    } catch (err) {
+      console.log("Error deleting Stream call during admin cancellation:", err.message);
+    }
+
+    // delete stream chat channel
+    try {
+      const channel = chatClient.channel("messaging", session.callId);
+      await channel.delete();
+    } catch (err) {
+      console.log("Error deleting Stream channel during admin cancellation:", err.message);
+    }
+
+    session.status = "completed";
+    await session.save();
+
+    res.status(200).json({ session, message: "Session cancelled by admin successfully" });
+  } catch (error) {
+    console.log("Error in cancelSessionAdmin controller:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}

@@ -44,4 +44,12 @@ export const sessionApi = {
     const response = await axiosInstance.get(`/chat/token`);
     return response.data;
   },
-};
+  getAdminActiveSessions: async () => {
+    const response = await axiosInstance.get("/sessions/admin/active");
+    return response.data;
+  },
+  cancelSessionAdmin: async (id) => {
+    const response = await axiosInstance.post(`/sessions/admin/${id}/cancel`);
+    return response.data;
+  },
+};

@@ -12,6 +12,7 @@ import ContestsPage from "./pages/ContestsPage";
 import ResourcesPage from "./pages/ResourcesPage";
 import CodeFolioPage from "./pages/CodeFolioPage";
 import MockInterviewPage from "./pages/MockInterviewPage";
+import AdminSessionsPage from "./pages/AdminSessionsPage";
 
 function App() {
   const { isSignedIn, isLoaded } = useUser();
@@ -31,6 +32,7 @@ function App() {
         <Route path="/codefolio" element={isSignedIn ? <CodeFolioPage /> : <Navigate to={"/"} />} />
         <Route path="/mock-interview" element={isSignedIn ? <MockInterviewPage /> : <Navigate to={"/"} />} />
         <Route path="/add-problem" element={isSignedIn ? <AddProblem /> : <Navigate to={"/"} />} />
+        <Route path="/admin/sessions" element={isSignedIn ? <AdminSessionsPage /> : <Navigate to={"/"} />} />
 
         <Route path="/problem/:id" element={isSignedIn ? <ProblemPage /> : <Navigate to={"/"} />} />
         <Route path="/session/:id" element={isSignedIn ? <SessionPage /> : <Navigate to={"/"} />} />
@@ -42,3 +44,4 @@ function App() {
 }
 
 export default App;
+
