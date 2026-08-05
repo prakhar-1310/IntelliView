@@ -6,14 +6,18 @@ import {
   UsersIcon,
   ZapIcon,
   LoaderIcon,
+  ShieldAlertIcon,
 } from "lucide-react";
 import { Link } from "react-router";
 import { useState } from "react";
+import { useUser } from "@clerk/clerk-react";
+import { isAdmin } from "../lib/admin";
 import { getDifficultyBadgeClass } from "../lib/utils";
 import JoinByCodeModal from "./JoinByCodeModal";
 import { useJoinSessionByCode } from "../hooks/useSessions";
 
 function ActiveSessions({ count, isLoading, isUserInSession }) {
+  const { user } = useUser();
   const [showCodeModal, setShowCodeModal] = useState(false);
   const joinByCodeMutation = useJoinSessionByCode();
   const [joinError, setJoinError] = useState("");
@@ -81,11 +85,21 @@ function ActiveSessions({ count, isLoading, isUserInSession }) {
 
                 <button
                   onClick={() => setShowCodeModal(true)}
-                  className="w-full bg-linear-to-r from-primary to-[#6b2d3e] text-white py-3 rounded-lg hover:shadow-lg transition-all font-medium flex items-center justify-center gap-2"
+                  className="w-full bg-linear-to-r from-primary to-[#6b2d3e] text-white py-3 rounded-lg hover:shadow-lg transition-all font-medium flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Code2Icon className="size-5" />
                   Join Session by Code
                 </button>
+
+                {isAdmin(user) && (
+                  <Link
+                    to="/admin/sessions"
+                    className="w-full bg-[#d4af37] hover:bg-[#c39e26] text-[#451a21] py-3 rounded-lg hover:shadow-lg transition-all font-bold flex items-center justify-center gap-2 text-xs uppercase tracking-wider"
+                  >
+                    <ShieldAlertIcon className="size-4 text-[#451a21]" />
+                    Manage Running Sessions (Admin Console)
+                  </Link>
+                )}
 
                 <div className="text-xs text-gray-500 text-center p-3 bg-blue-50 border border-blue-100 rounded-lg">
                   <p>💡 <strong>Pro Tip:</strong> Ask the session creator for their unique 8-character session code to join directly!</p>
@@ -95,6 +109,7 @@ function ActiveSessions({ count, isLoading, isUserInSession }) {
           </div>
         </div>
       </div>
+
 
       <JoinByCodeModal
         isOpen={showCodeModal}

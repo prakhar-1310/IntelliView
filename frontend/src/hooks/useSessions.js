@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { sessionApi } from "../api/sessions";
 
@@ -94,3 +94,30 @@ export const useLeaveSession = () => {
 
   return result;
 };
+
+export const useAdminActiveSessions = () => {
+  const result = useQuery({
+    queryKey: ["adminActiveSessions"],
+    queryFn: sessionApi.getAdminActiveSessions,
+    refetchInterval: 5000, // poll every 5 seconds for live status
+  });
+
+  return result;
+};
+
+export const useAdminCancelSession = () => {
+  const queryClient = useQueryClient();
+  const result = useMutation({
+    mutationKey: ["adminCancelSession"],
+    mutationFn: sessionApi.cancelSessionAdmin,
+    onSuccess: (data) => {
+      toast.success(data.message || "Session cancelled by admin!");
+      queryClient.invalidateQueries({ queryKey: ["adminActiveSessions"] });
+      queryClient.invalidateQueries({ queryKey: ["activeSessions"] });
+      queryClient.invalidateQueries({ queryKey: ["myActiveSessions"] });
+    },
+    onError: (error) => toast.error(error.response?.data?.message || "Failed to cancel session"),
+  });
+
+  return result;
+};

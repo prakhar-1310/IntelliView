@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import { BookOpenIcon, LayoutDashboardIcon, SparklesIcon, TrophyIcon, LibraryIcon, TrendingUpIcon, BrainCircuitIcon } from "lucide-react";
+import { BookOpenIcon, LayoutDashboardIcon, SparklesIcon, TrophyIcon, LibraryIcon, TrendingUpIcon, BrainCircuitIcon, ShieldAlertIcon } from "lucide-react";
 import { UserButton, useUser } from "@clerk/clerk-react";
 import { isAdmin } from "../lib/admin";
 
@@ -143,6 +143,23 @@ function Navbar() {
             </div>
           </Link>
 
+          {/* ADMIN SESSIONS LINK */}
+          {isAdmin(user) && (
+            <Link
+              to={"/admin/sessions"}
+              className={`px-3.5 py-2.5 rounded-lg transition-all duration-200 text-[10px] font-bold tracking-wider uppercase flex items-center gap-x-1.5 border border-[#d4af37]/40
+                ${
+                  isActive("/admin/sessions")
+                    ? "bg-[#d4af37] text-[#451a21] font-black"
+                    : "bg-[#d4af37]/15 text-[#451a21] hover:bg-[#d4af37]/30"
+                }
+                `}
+            >
+              <ShieldAlertIcon className="size-3.5 text-[#451a21]" />
+              <span className="hidden sm:inline">Admin Sessions</span>
+            </Link>
+          )}
+
           <div className="ml-4 mt-2 flex items-center gap-2">
             {isAdmin(user) && (
               <span className="px-2 py-1 bg-[#d4af37] text-white text-[9px] font-bold tracking-wider uppercase rounded">Admin</span>
@@ -155,3 +172,4 @@ function Navbar() {
   );
 }
 export default Navbar;
+
