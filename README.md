@@ -32,7 +32,8 @@
 ---
 
 ## 🧩 Coding Problem Page
-![Problem Page](https://github.com/user-attachments/assets/ced5174b-d742-47e0-b45c-b75a83bd32c4)
+<img width="1292" height="779" alt="Screenshot 2026-10-21 at 5 23 21 PM" src="https://github.com/user-attachments/assets/65891bff-9c04-4548-8b70-269bbfd46d57" />
+
 
 
 ## 🧩 Coding Practice Page With YouTube Video Solution
