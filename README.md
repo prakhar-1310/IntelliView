@@ -17,7 +17,7 @@
 ---
 
 ## 🔐 Sign Up & Authentication
-![Sign Up Page](https://github.com/user-attachments/assets/c61289e1-302d-4a77-a83a-a7de63b32fdd)
+![Sign Up Page](https://github.com/user-attachments/assets/cbf34ca4-3e05-48d9-8b33-9677ea0dbe64)
 
 ---
 
