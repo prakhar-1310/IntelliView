@@ -27,7 +27,7 @@
 ---
 
 ## 🎥 Live Interview Session
-![Live Interview Session](https://github.com/user-attachments/assets/18e356d2-49dc-42ab-88c0-b70852f255ca)
+<img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/7200fb8c-63f7-45c1-b2a4-63b60335693f" />
 
 ---
 
