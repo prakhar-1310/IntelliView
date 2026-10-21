@@ -22,7 +22,7 @@
 ---
 
 ## 📊 Dashboard
-![Dashboard](https://github.com/user-attachments/assets/cf67f678-68c8-4230-8783-063a1603d13b)
+<img width="1328" height="785" alt="Screenshot 2026-10-21 at 4 56 35 PM" src="https://github.com/user-attachments/assets/56794249-831c-49d1-820c-72b7eb44b2a4" />
 
 ---
 
